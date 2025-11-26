@@ -1,0 +1,4 @@
+greenlet==3.2.4
+SQLAlchemy==2.0.44
+typing_extensions==4.15.0
+kafka-python-ng
