@@ -1,0 +1,11 @@
+[project]
+name = "simulator"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.14"
+dependencies = [
+    "aiosqlite>=0.22.0",
+    "kafka-python-ng>=2.2.3",
+    "python-dotenv>=1.2.1",
+    "sqlalchemy>=2.0.45",
+]
