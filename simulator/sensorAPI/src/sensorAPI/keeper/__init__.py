@@ -6,6 +6,7 @@ from sqlalchemy import insert
 
 
 async def _dump_queue(buffer: asyncio.Queue[SensorBufferType]):
+    print("Keeper been started")
     while True:
         await asyncio.sleep(10)
         batch: list[SensorBufferType] = []
@@ -23,8 +24,8 @@ async def _dump_queue(buffer: asyncio.Queue[SensorBufferType]):
                     insert(SensorData),
                     batch,
                 )
+        print(f"Data-batch with l({len(batch)}) been pushed to db")
 
 
 def start_keeper(queue: asyncio.Queue[SensorBufferType]):
-    task = asyncio.create_task(_dump_queue(queue))
-    return task
+    return asyncio.create_task(_dump_queue(queue))

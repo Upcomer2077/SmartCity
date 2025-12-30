@@ -4,6 +4,7 @@ from sensorAPI.sensors.baseSensor import BaseSensor
 
 
 async def _start_sensors(sensor_list: list[BaseSensor]):
+    print("Generator been started")
     while True:
         start_time = asyncio.get_event_loop().time()
 

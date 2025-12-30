@@ -43,20 +43,20 @@ async def launch_sensors():
         keeper_task = start_keeper(shared_queue)
 
         await asyncio.gather(sensor_task, keeper_task)
+
+    except asyncio.CancelledError, KeyboardInterrupt:
+        print("Interrupted by user (Ctrl+C)")
+
     except Exception as e:
         print(f"❌ Error: {e}")
+
     finally:
-        print("👋 Sim stopped")
-        asyncio.run(engine.dispose())
+        try:
+            await engine.dispose()
+        except Exception:
+            print("Cannot dispose engine")
+        print("👋 Sensors stopped")
 
 
 def main():
-    try:
-        asyncio.run(launch_sensors())
-    except KeyboardInterrupt:
-        print("⚠ Interrupted by user (Ctrl+C)")
-    except Exception as e:
-        print(f"❌ Error: {e}")
-    finally:
-        print("👋 Sim stopped")
-        asyncio.run(engine.dispose())
+    asyncio.run(launch_sensors())

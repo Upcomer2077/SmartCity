@@ -12,7 +12,7 @@ async def _get_data():
     async with AsyncSessionLocal() as session:
         result: AsyncScalarResult[SensorData] = await session.stream_scalars(
             select(SensorData)
-            .where(SensorData.isDelivered == False)  # noqa: E712
+            .where(SensorData.isDelivered == False)  # noqa: E712 !Do not disturb
             .limit(limit=20000),
             execution_options={"yield_per": 10000},
         )
@@ -24,6 +24,7 @@ async def _get_data():
 
 
 async def launch_broker():
+    print("Broker been launched")
     try:
         kafka_broker = KafkaBroker()
         kafka_broker.bring_me_to_life()
