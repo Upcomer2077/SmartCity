@@ -54,9 +54,7 @@ class SensorData(Base):
 DATABASE_URL = "sqlite+aiosqlite:///./db.db"
 
 engine = create_async_engine(
-    DATABASE_URL,
-    echo=False,
-    pool_pre_ping=True,
+    DATABASE_URL, echo=False, pool_pre_ping=True, connect_args={"timeout": 30}
 )
 
 
