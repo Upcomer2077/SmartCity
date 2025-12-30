@@ -1,28 +1,29 @@
 import json
-import os
+
 from broker.brokers.base_broker import BaseBroker
 from kafka import KafkaProducer
 
 
 class KafkaBroker(BaseBroker):
-    def __init__(self):
+    def __init__(self, btsrp_srvrs: str | list[str] = "localhost:9092"):
         super().__init__()
-        self.broker: KafkaProducer
-        self.KAFKA_BOOTSTRAP_SERVERS = os.getenv(
-            "KAFKA_BOOTSTRAP_SERVERS", "localhost:9092"
-        )
-        self.KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "sensors")
+        self._broker: KafkaProducer
+        self._KAFKA_BOOTSTRAP_SERVERS = btsrp_srvrs
 
     def bring_me_to_life(self):
-        self.broker = KafkaProducer(
-            bootstrap_servers="localhost:9092",
+        self._broker = KafkaProducer(
+            bootstrap_servers=self._KAFKA_BOOTSTRAP_SERVERS,
             value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-            acks="all",
+            acks=1,
             retries=3,
             max_in_flight_requests_per_connection=1,
             compression_type="gzip",
+            max_request_size=2e6,
         )
-        print(f"✓ Kafka producer создан. Сервер: {self.KAFKA_BOOTSTRAP_SERVERS}")
+        print(f"✓ Kafka producer создан. Сервер(ы): {self._KAFKA_BOOTSTRAP_SERVERS}")
 
     def push_to_target(self, topic: str, batch: list[str]):
-        self.broker.send(topic, value=batch)
+        self._broker.send(topic, value=batch)
+
+    def get_broker_name(self) -> str:
+        return "Kafka"
