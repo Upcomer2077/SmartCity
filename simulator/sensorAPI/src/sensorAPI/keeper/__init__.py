@@ -1,12 +1,11 @@
 import asyncio
 
-from sqlalchemy import insert
-
 from common.database import AsyncSessionLocal, SensorData
 from common.types import SensorBufferType
+from sqlalchemy import insert
 
 
-async def dump_queue(buffer: asyncio.Queue[SensorBufferType]):
+async def _dump_queue(buffer: asyncio.Queue[SensorBufferType]):
     while True:
         await asyncio.sleep(10)
         batch: list[SensorBufferType] = []
@@ -27,5 +26,5 @@ async def dump_queue(buffer: asyncio.Queue[SensorBufferType]):
 
 
 def start_keeper(queue: asyncio.Queue[SensorBufferType]):
-    task = asyncio.create_task(dump_queue(queue))
+    task = asyncio.create_task(_dump_queue(queue))
     return task

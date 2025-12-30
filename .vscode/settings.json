@@ -1,5 +1,13 @@
 {
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+  "cSpell.ignorePaths": [
+    "node_modules/**",
+    "*.gitignore",
+    "settings.json",
+    ".pylintrc"
+  ],
+  "cSpell.words": ["acks", "sessionmaker"],
+  "python.languageServer": "None"
 }

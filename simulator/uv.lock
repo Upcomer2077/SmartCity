@@ -2,6 +2,14 @@ version = 1
 revision = 3
 requires-python = ">=3.14"
 
+[manifest]
+members = [
+    "broker",
+    "common",
+    "sensorapi",
+    "simulator",
+]
+
 [[package]]
 name = "aiosqlite"
 version = "0.22.0"
@@ -9,6 +17,40 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/3a/0d/449c024bdabd0678ae07d804e60ed3b9786facd3add66f51eee67a0fccea/aiosqlite-0.22.0.tar.gz", hash = "sha256:7e9e52d72b319fcdeac727668975056c49720c995176dc57370935e5ba162bb9", size = 14707, upload-time = "2025-12-13T18:32:45.762Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ef/39/b2181148075272edfbbd6d87e6cd78cc71dca243446fa3b381fd4116950b/aiosqlite-0.22.0-py3-none-any.whl", hash = "sha256:96007fac2ce70eda3ca1bba7a3008c435258a592b8fbf2ee3eeaa36d33971a09", size = 17263, upload-time = "2025-12-13T18:32:44.619Z" },
+]
+
+[[package]]
+name = "broker"
+version = "0.1.0"
+source = { editable = "broker" }
+dependencies = [
+    { name = "aiosqlite" },
+    { name = "common" },
+    { name = "kafka-python-ng" },
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiosqlite", specifier = ">=0.22.0" },
+    { name = "common", editable = "common" },
+    { name = "kafka-python-ng", specifier = ">=2.2.3" },
+    { name = "sqlalchemy", specifier = ">=2.0.45" },
+]
+
+[[package]]
+name = "common"
+version = "0.1.0"
+source = { editable = "common" }
+dependencies = [
+    { name = "aiosqlite" },
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiosqlite", specifier = ">=0.22.0" },
+    { name = "sqlalchemy", specifier = ">=2.0.45" },
 ]
 
 [[package]]
@@ -44,12 +86,20 @@ wheels = [
 ]
 
 [[package]]
-name = "python-dotenv"
-version = "1.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f0/26/19cadc79a718c5edbec86fd4919a6b6d3f681039a2f6d66d14be94e75fb9/python_dotenv-1.2.1.tar.gz", hash = "sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6", size = 44221, upload-time = "2025-10-26T15:12:10.434Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/1b/a298b06749107c305e1fe0f814c6c74aea7b2f1e10989cb30f544a1b3253/python_dotenv-1.2.1-py3-none-any.whl", hash = "sha256:b81ee9561e9ca4004139c6cbba3a238c32b03e4894671e181b671e8cb8425d61", size = 21230, upload-time = "2025-10-26T15:12:09.109Z" },
+name = "sensorapi"
+version = "0.1.0"
+source = { editable = "sensorAPI" }
+dependencies = [
+    { name = "aiosqlite" },
+    { name = "common" },
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiosqlite", specifier = ">=0.22.0" },
+    { name = "common", editable = "common" },
+    { name = "sqlalchemy", specifier = ">=2.0.45" },
 ]
 
 [[package]]
@@ -57,18 +107,16 @@ name = "simulator"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "aiosqlite" },
-    { name = "kafka-python-ng" },
-    { name = "python-dotenv" },
-    { name = "sqlalchemy" },
+    { name = "broker" },
+    { name = "common" },
+    { name = "sensorapi" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "aiosqlite", specifier = ">=0.22.0" },
-    { name = "kafka-python-ng", specifier = ">=2.2.3" },
-    { name = "python-dotenv", specifier = ">=1.2.1" },
-    { name = "sqlalchemy", specifier = ">=2.0.45" },
+    { name = "broker", editable = "broker" },
+    { name = "common", editable = "common" },
+    { name = "sensorapi", editable = "sensorAPI" },
 ]
 
 [[package]]

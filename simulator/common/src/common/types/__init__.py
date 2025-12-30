@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from sqlalchemy import UUID
+
 
 class CoordsType(TypedDict):
     lon: float
@@ -9,4 +11,4 @@ class CoordsType(TypedDict):
 class SensorBufferType(TypedDict):
     ts: float
     value: float | str
-    sensor_id: str
+    sensor_id: UUID

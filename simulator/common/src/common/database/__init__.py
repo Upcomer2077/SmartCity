@@ -9,10 +9,10 @@ from sqlalchemy import (
     Integer,
     Text,
     event,
-    func,
 )
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.sql.functions import now
 from sqlalchemy.types import UUID, Float, Uuid
 
 from common.types.enums import SensorEnum
@@ -29,7 +29,7 @@ class Sensor(Base):
     lat: Mapped[float] = mapped_column(Float, nullable=False)
     lon: Mapped[float] = mapped_column(Float, nullable=False)
     type: Mapped[SensorEnum] = mapped_column(Enum(SensorEnum), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(server_default=now())
 
     __table_args__ = (Index("idx_sensor_lat_lon", "lat", "lon", "type", unique=True),)
 
@@ -61,7 +61,7 @@ engine = create_async_engine(
 
 
 @event.listens_for(engine.sync_engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
+def set_sqlite_pragma(dbapi_connection, _connection_record):
     cursor = dbapi_connection.cursor()
     cursor.execute("PRAGMA journal_mode=WAL")
     cursor.execute("PRAGMA synchronous=NORMAL")

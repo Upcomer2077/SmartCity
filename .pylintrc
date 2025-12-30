@@ -1,0 +1,9 @@
+# Optional: tune messages; avoid disabling import-error globally to not hide real issues
+# disable=
+
+[MESSAGES CONTROL]
+disable = missing-docstring, 
+        too-few-public-methods,  
+
+[REPORTS]
+output-format = colorized
