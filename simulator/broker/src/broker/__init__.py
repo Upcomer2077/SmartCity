@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio.result import AsyncScalarResult
 from broker.brokers.kafka_broker import KafkaBroker
 
 
-async def get_data():
+async def _get_data():
     async with AsyncSessionLocal() as session:
         result: AsyncScalarResult[SensorData] = await session.stream_scalars(
             select(SensorData)
@@ -23,13 +23,13 @@ async def get_data():
         return records_ids, records
 
 
-async def main():
+async def launch_broker():
     try:
         kafka_broker = KafkaBroker()
         kafka_broker.bring_me_to_life()
 
         while True:
-            _records_ids, records = await get_data()
+            _records_ids, records = await _get_data()
             batch_len = str(len(records))
 
             if batch_len == 0:
@@ -60,5 +60,5 @@ async def main():
         print("👋 Broker stopped")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+def main():
+    asyncio.run(launch_broker())

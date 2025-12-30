@@ -12,4 +12,4 @@ broker = { workspace = true }
 
 [tool.uv.workspace]
 members = ["common", "sensorAPI", "broker"]
-exclude = ["packages/seeds"]
+# exclude = ["packages/seeds"]

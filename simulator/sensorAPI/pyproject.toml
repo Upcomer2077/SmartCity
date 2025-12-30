@@ -7,3 +7,6 @@ dependencies = ["aiosqlite>=0.22.0", "sqlalchemy>=2.0.45", "common"]
 
 [tool.uv.sources]
 common = { workspace = true }
+
+[project.scripts]
+sensor = "sensorAPI:main"
