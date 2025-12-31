@@ -1,0 +1,32 @@
+name: Python application CI
+
+on:
+  push:
+    branches: [main, cicd-test]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: |
+          cd tests
+          uv sync
+
+      - name: Run tests
+        run: uv run pytest
