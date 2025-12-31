@@ -1,0 +1,22 @@
+[project]
+name = "tests"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = ["sensorAPI", "broker"]
+
+[tool.uv.sources]
+sensorAPI = { path = "../simulator/sensorAPI", editable = false }
+broker = { path = "../simulator/broker", editable = false }
+
+[dependency-groups]
+dev = ["pytest>=9.0.2"]
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py", "*_test.py"]
+python_functions = "test_*"
+addopts = [
+    "-vv",                     # подробный вывод хода теста
+    "--import-mode=importlib", # меньше проблем с импортами
+]
