@@ -26,6 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd tests
+          uv add pytest
           uv sync --all-packages
 
       - name: Run tests
