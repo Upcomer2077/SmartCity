@@ -29,4 +29,6 @@ jobs:
           uv sync --all-packages
 
       - name: Run tests
-        run: uv run pytest
+        run: |
+          cd tests
+          uv run pytest
