@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message SensorDTO  {
+    double ts = 1;
+    string sensor_id = 2;
+    string value = 3;
+}
+
+message SensorBatch {
+    repeated SensorDTO records = 1;
+}

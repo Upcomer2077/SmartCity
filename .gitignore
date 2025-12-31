@@ -358,3 +358,4 @@ vite.config.ts.timestamp-*
 .vite/
 
 *.db*
+*_pb2.py*
