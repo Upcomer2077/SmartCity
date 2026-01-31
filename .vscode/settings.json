@@ -9,5 +9,5 @@
     ".pylintrc"
   ],
   "cSpell.words": ["acks", "sessionmaker"],
-  "python.languageServer": "None"
+  "python.languageServer": "None" //For Cursor AI python
 }
