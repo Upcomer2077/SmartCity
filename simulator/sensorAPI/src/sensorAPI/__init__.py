@@ -5,12 +5,12 @@ from common.types import SensorBufferType
 from common.types.enums import SensorEnum
 from sqlalchemy import select
 
-from sensorAPI.generator import launch_generator
-from sensorAPI.keeper import start_keeper
-from sensorAPI.sensors.air_quality.airSensor import AirSensor
-from sensorAPI.sensors.baseSensor import BaseSensor
-from sensorAPI.sensors.temperature.temperatureSensor import TemperatureSensor
-from sensorAPI.sensors.traffic.trafficSensor import TrafficSensor
+from sensorapi.generator import launch_generator
+from sensorapi.keeper import start_keeper
+from sensorapi.sensors.air_quality.airSensor import AirSensor
+from sensorapi.sensors.baseSensor import BaseSensor
+from sensorapi.sensors.temperature.temperatureSensor import TemperatureSensor
+from sensorapi.sensors.traffic.trafficSensor import TrafficSensor
 
 shared_queue: asyncio.Queue[SensorBufferType] = asyncio.Queue()
 
@@ -59,4 +59,5 @@ async def launch_sensors():
 
 
 def main():
+    print("🚀 Sensors started")
     asyncio.run(launch_sensors())

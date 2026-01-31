@@ -2,14 +2,9 @@
 name = "simulator"
 version = "0.1.0"
 description = "Add your description here"
+readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["common", "sensorAPI", "broker"]
-
-[tool.uv.sources]
-common = { workspace = true }
-sensorAPI = { workspace = true }
-broker = { workspace = true }
+dependencies = []
 
 [tool.uv.workspace]
-members = ["common", "sensorAPI", "broker"]
-# exclude = ["packages/seeds"]
+members = ["common", "broker", "sensorapi"]

@@ -2,7 +2,7 @@ from datetime import datetime
 from random import randint, random
 
 from common.types import SensorBufferType
-from sensorAPI.sensors.baseSensor import BaseSensor
+from sensorapi.sensors.baseSensor import BaseSensor
 
 
 class AirSensor(BaseSensor):

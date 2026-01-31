@@ -1,6 +1,6 @@
 import asyncio
 
-from sensorAPI.sensors.baseSensor import BaseSensor
+from sensorapi.sensors.baseSensor import BaseSensor
 
 
 async def _start_sensors(sensor_list: list[BaseSensor]):

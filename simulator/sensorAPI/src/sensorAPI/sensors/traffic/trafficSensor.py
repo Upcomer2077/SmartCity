@@ -3,7 +3,7 @@ from random import choice, random
 
 from common.types import SensorBufferType
 from common.types.enums import VehicleType
-from sensorAPI.sensors.baseSensor import BaseSensor
+from sensorapi.sensors.baseSensor import BaseSensor
 
 
 class TrafficSensor(BaseSensor):
