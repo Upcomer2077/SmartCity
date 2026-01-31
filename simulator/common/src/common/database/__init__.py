@@ -18,11 +18,11 @@ from sqlalchemy.types import UUID, Float, Uuid
 from common.types.enums import SensorEnum
 
 
-class Base(DeclarativeBase):
+class _Base(DeclarativeBase):
     pass
 
 
-class Sensor(Base):
+class Sensor(_Base):
     __tablename__ = "sensor"
 
     sensor_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
@@ -34,7 +34,7 @@ class Sensor(Base):
     __table_args__ = (Index("idx_sensor_lat_lon", "lat", "lon", "type", unique=True),)
 
 
-class SensorData(Base):
+class SensorData(_Base):
     __tablename__ = "sensor_data"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

@@ -7,3 +7,6 @@ dependencies = []
 
 [tool.uv.workspace]
 members = ["common", "broker", "sensorapi"]
+
+[dependency-groups]
+dev = ["alembic>=1.18.3"]

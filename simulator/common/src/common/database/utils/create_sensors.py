@@ -1,7 +1,7 @@
 import asyncio
 from random import choice
 
-from common.database import AsyncSessionLocal, Base, Sensor, engine
+from common.database import AsyncSessionLocal, Sensor, _Base, engine
 from common.types.enums import SensorEnum
 
 
@@ -11,7 +11,7 @@ async def create_sample_sensors(commit: bool = True) -> list[Sensor]:
     Returns the list of Sensor instances (detached or persisted depending on session lifecycle).
     """
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(_Base.metadata.create_all)
     sensors = [
         Sensor(
             type=choice([*SensorEnum]),
