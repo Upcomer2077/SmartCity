@@ -5,6 +5,7 @@ from kafka.errors import KafkaTimeoutError, NoBrokersAvailable
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio.result import AsyncScalarResult
 
+from broker import sensor_data_pb2
 from broker.brokers.kafka_broker import KafkaBroker
 
 
@@ -16,11 +17,16 @@ async def _get_data():
             .limit(limit=20000),
             execution_options={"yield_per": 10000},
         )
-        records_ids, records = [], []
+        records_ids: list[int] = []
+        batch = sensor_data_pb2.SensorBatch()
+
         async for i in result:
             records_ids.append(i.id)
-            records.append((str(i.sensor_id), i.ts, i.value))
-        return records_ids, records
+            sensor_item = batch.records.add()
+            sensor_item.ts = i.ts
+            sensor_item.sensor_id = str(i.sensor_id)
+            sensor_item.value = i.value
+        return records_ids, batch
 
 
 async def launch_broker():
@@ -30,16 +36,16 @@ async def launch_broker():
         kafka_broker.bring_me_to_life()
 
         while True:
-            _records_ids, records = await _get_data()
-            batch_len = str(len(records))
+            _records_ids, batch = await _get_data()
+            batch_len = str(len(batch.records))
 
             if batch_len == 0:
                 continue
 
             print(f"Batch len: {batch_len}")
-            kafka_broker.push_to_target("topic", records)
+            kafka_broker.push_to_target("topic", batch)
 
-            print(f"Pushed to f{kafka_broker.get_broker_name()}")
+            print(f"Pushed to {kafka_broker.get_broker_name()}")
 
             # TODO: update in db
             await asyncio.sleep(10)

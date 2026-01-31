@@ -7,7 +7,7 @@ class BaseBroker(ABC):
         self._broker = None
 
     @abstractmethod
-    def push_to_target(self, topic: str, batch: list[str]):
+    def push_to_target(self, topic: str, batch):
         pass
 
     @abstractmethod

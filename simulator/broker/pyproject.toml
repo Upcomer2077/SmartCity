@@ -2,16 +2,22 @@
 name = "broker"
 version = "0.1.0"
 description = "Add your description here"
+readme = "README.md"
+authors = [{ name = "Eugene", email = "evgenijgoncarevic@gmail.com" }]
 requires-python = ">=3.14"
 dependencies = [
     "aiosqlite>=0.22.0",
     "kafka-python-ng>=2.2.3",
     "sqlalchemy>=2.0.45",
     "common",
+    "protobuf>=6.33.4",
 ]
+[project.scripts]
+broker = "broker:main"
 
 [tool.uv.sources]
 common = { workspace = true }
 
-[project.scripts]
-broker = "broker:main"
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
