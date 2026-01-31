@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from common.database import AsyncSessionLocal, SensorData, engine
 from kafka.errors import KafkaTimeoutError, NoBrokersAvailable
@@ -32,7 +33,8 @@ async def _get_data():
 async def launch_broker():
     print("Broker been launched")
     try:
-        kafka_broker = KafkaBroker()
+        bootstrap_servers = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+        kafka_broker = KafkaBroker(bootstrap_servers)
         kafka_broker.bring_me_to_life()
 
         while True:
