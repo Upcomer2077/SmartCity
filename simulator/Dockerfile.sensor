@@ -1,0 +1,28 @@
+FROM python:3.14-alpine AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /simulator
+
+COPY uv.lock  pyproject.toml .python-version ./
+COPY sensorapi/pyproject.toml sensorapi/
+COPY common/pyproject.toml common/
+
+RUN  --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-editable
+
+COPY sensorapi/  sensorapi/
+COPY common/ common/
+
+RUN --mount=type=cache,target=/root/.cache/uv \ 
+    uv sync --all-packages --no-editable 
+
+FROM python:3.14-alpine AS runner
+ENV PYTHONUNBUFFERED=1
+WORKDIR /simulator
+
+COPY --from=builder /simulator/.venv/ .venv/
+#TODO delete
+COPY "db.db" ./db.db
+ENV PATH="/simulator/.venv/bin:$PATH"
+CMD ["sensor"]
