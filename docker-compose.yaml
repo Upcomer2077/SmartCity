@@ -18,6 +18,13 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    profiles: [ kafka ]
 
   sim_sensors:
     build:
@@ -28,6 +35,7 @@ services:
       - simulatorNET
     volumes:
       - ./simulator/db.db:/simulator/db.db
+    profiles: [ simulator ]
 
   sim_pusher:
     build:
@@ -37,12 +45,13 @@ services:
     networks:
       - simulatorNET
     depends_on:
-      - sim_sensors
-      - kafka
+      kafka:
+        condition: service_healthy
     volumes:
       - ./simulator/db.db:/simulator/db.db
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    profiles: [ simulator ]
 
 networks:
   simulatorNET:
