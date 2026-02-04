@@ -1,0 +1,14 @@
+[project]
+name = "common"
+version = "0.1.0"
+description = "Add your description here"
+authors = [{ name = "Eugene", email = "evgenijgoncarevic@gmail.com" }]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+common = "common:main"
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
