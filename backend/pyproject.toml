@@ -3,14 +3,15 @@ name = "backend"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.14"
-dependencies = ["protobuf>=6.33.5", "sqlalchemy>=2.0.46"]
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "asyncpg>=0.31.0",
+    "protobuf>=6.33.5",
+    "sqlalchemy>=2.0.46",
+]
 
 [dependency-groups]
-dev = ["alembic>=1.18.3"]
+dev = ["alembic>=1.18.3", "psycopg2>=2.9.11"]
 
 [tool.uv.workspace]
-members = [
-    "consumer",
-    "common",
-    "app",
-]
+members = ["consumer", "common", "app"]
