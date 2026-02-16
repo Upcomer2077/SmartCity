@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import Required, TypedDict
 
 from sqlalchemy import UUID
 
@@ -9,6 +9,11 @@ class CoordsType(TypedDict):
 
 
 class SensorBufferType(TypedDict):
-    ts: float
-    value: float
-    sensor_sn: UUID
+    """
+    Standardized dictionary for sensor measurement buffering.
+    Matches the schema for bulk database insertion.
+    """
+
+    ts: Required[float]
+    value: Required[float]
+    sensor_sn: Required[UUID]

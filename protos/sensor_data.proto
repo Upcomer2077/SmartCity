@@ -1,11 +1,13 @@
 syntax = "proto3";
 
+// Data Transfer Object for a single sensor measurement
 message SensorDTO  {
     double ts = 1;
     string sensor_sn = 2;
     float value = 3;
 }
 
+// Batch container for multiple sensor records to optimize throughput
 message SensorBatch {
     repeated SensorDTO records = 1;
 }

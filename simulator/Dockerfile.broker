@@ -1,23 +1,31 @@
 FROM python:3.14-alpine AS builder
+
+# Install uv binary from the official image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /simulator
 
+# Copy dependency definition files first to leverage Docker layer caching
 COPY uv.lock  pyproject.toml .python-version ./
 COPY broker/pyproject.toml broker/
 COPY common/pyproject.toml common/
 
+# Install dependencies without the project itself to cache the environment
 RUN  --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --no-editable
 
+# Copy source code for internal workspaces
 COPY broker/  broker/
 COPY common/  common/
 
+# Final sync to install all workspace packages into the virtual environment
 RUN --mount=type=cache,target=/root/.cache/uv \ 
     uv sync --all-packages --no-editable 
 
+# Production-ready slim runner stage
 FROM python:3.14-alpine AS runner
+# Ensure logs are delivered to the console in real-time
 ENV PYTHONUNBUFFERED=1
 WORKDIR /simulator
 

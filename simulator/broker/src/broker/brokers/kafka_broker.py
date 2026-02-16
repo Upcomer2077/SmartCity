@@ -3,12 +3,27 @@ from kafka import KafkaProducer
 
 
 class KafkaBroker(BaseBroker):
+    """
+    Kafka implementation of the BaseBroker.
+
+    Handles connection lifecycle and serialized batch delivery to Kafka topics.
+    """
+
     def __init__(self, btsrp_srvrs: str | list[str] = "localhost:9092"):
+        """
+        Set up Kafka connection parameters.
+
+        :param btsrp_srvrs: Address of the Kafka cluster.
+        """
         super().__init__()
         self._broker: KafkaProducer
         self._KAFKA_BOOTSTRAP_SERVERS = btsrp_srvrs
 
     def bring_me_to_life(self):
+        """
+        Initialize the KafkaProducer with optimized throughput settings.
+        Uses Protobuf serialization (SerializeToString) for the payload.
+        """
         self._broker = KafkaProducer(
             bootstrap_servers=self._KAFKA_BOOTSTRAP_SERVERS,
             value_serializer=lambda v: v.SerializeToString(),
@@ -18,9 +33,15 @@ class KafkaBroker(BaseBroker):
             compression_type="gzip",
             max_request_size=2e6,
         )
-        print(f"✓ Kafka producer создан. Сервер(ы): {self._KAFKA_BOOTSTRAP_SERVERS}")
+        print(f"✓ Kafka producer created. Server(s): {self._KAFKA_BOOTSTRAP_SERVERS}")
 
     def push_to_target(self, topic: str, batch):
+        """
+        Asynchronously send a data batch to a Kafka topic.
+
+        :param topic: Target Kafka topic name.
+        :param batch: Protobuf message batch to be serialized and sent.
+        """
         self._broker.send(topic, value=batch)
 
     def get_broker_name(self) -> str:

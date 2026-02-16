@@ -23,6 +23,11 @@ class _Base(DeclarativeBase):
 
 
 class Sensor(_Base):
+    """
+    Registry for physical sensors.
+    Stores location, type, and operational status.
+    """
+
     __tablename__ = "sensors"
 
     serial_number: Mapped[UUID] = mapped_column(
@@ -40,6 +45,11 @@ class Sensor(_Base):
 
 
 class SensorData(_Base):
+    """
+    Time-series storage for sensor measurements.
+    Maps to SQLite rowid for primary key efficiency.
+    """
+
     __tablename__ = "sensor_data"
     id: MappedColumn[int] = mapped_column(Integer, name="rowid", primary_key=True)
     ts: Mapped[datetime] = mapped_column(Float, nullable=False)
@@ -63,12 +73,13 @@ engine = create_async_engine(
 
 @event.listens_for(engine.sync_engine, "connect")
 def set_sqlite_pragma(dbapi_connection, _connection_record):
+    """Configures SQLite performance and safety settings on connection."""
     cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.execute("PRAGMA cache_size=-20000")
-    cursor.execute("PRAGMA busy_timeout=30000")
-    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.execute("PRAGMA journal_mode=WAL")  # Concurrent read/write
+    cursor.execute("PRAGMA synchronous=NORMAL")  # Reduced disk syncs
+    cursor.execute("PRAGMA cache_size=-20000")  # 20MB page cache
+    cursor.execute("PRAGMA busy_timeout=10000")  # Lock wait timeout
+    cursor.execute("PRAGMA foreign_keys=ON")  # Enforce constraints
     cursor.close()
 
 

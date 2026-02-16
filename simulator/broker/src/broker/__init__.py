@@ -11,6 +11,13 @@ from broker.brokers.kafka_broker import KafkaBroker
 
 
 async def _get_data():
+    """
+    Fetch undelivered sensor data from the database.
+
+    Streams up to 20,000 records and converts them into a Protobuf SensorBatch.
+
+    :return: A tuple containing a list of record IDs and the Protobuf batch object.
+    """
     async with AsyncSessionLocal() as session:
         result: AsyncScalarResult[SensorData] = await session.stream_scalars(
             select(SensorData)
@@ -31,6 +38,12 @@ async def _get_data():
 
 
 async def launch_broker():
+    """
+    Main broker loop to bridge database and Kafka.
+
+    Initializes the Kafka producer and periodically pushes undelivered
+    batches to the specified topic.
+    """
     print("Broker been launched")
     try:
         bootstrap_servers = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
@@ -53,7 +66,7 @@ async def launch_broker():
             await asyncio.sleep(10)
 
     except NoBrokersAvailable as e:
-        print(f"✗ Ошибка при создании Kafka producer: {e}")
+        print(f"✗ Failed to create Kafka producer: {e}")
 
     except KafkaTimeoutError as e:
         print("Failed to update metadata after 60.0 secs.", e)
@@ -70,4 +83,5 @@ async def launch_broker():
 
 
 def main():
+    """Service entry point for the Kafka broker worker."""
     asyncio.run(launch_broker())
