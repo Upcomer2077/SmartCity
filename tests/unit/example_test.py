@@ -5,7 +5,7 @@ from uuid import uuid4
 import pytest
 from broker.brokers.base_broker import BaseBroker
 from broker.brokers.kafka_broker import KafkaBroker
-from common.types.enums import SensorEnum
+from common.types.enums import AvailableSensors
 from sensorAPI import _get_sensor_type
 from sensorAPI.sensors.air_quality.airSensor import AirSensor
 from sensorAPI.sensors.temperature.temperatureSensor import TemperatureSensor
@@ -16,19 +16,19 @@ from sensorAPI.sensors.traffic.trafficSensor import TrafficSensor
 
 def test_get_sensor_type_air_quality():
     """Тест функции _get_sensor_type для типа AIR_Q"""
-    sensor_class = _get_sensor_type(SensorEnum.AIR_Q)
+    sensor_class = _get_sensor_type(AvailableSensors.AIR_Q)
     assert sensor_class == AirSensor
 
 
 def test_get_sensor_type_temperature():
     """Тест функции _get_sensor_type для типа TEMP"""
-    sensor_class = _get_sensor_type(SensorEnum.TEMP)
+    sensor_class = _get_sensor_type(AvailableSensors.TEMP)
     assert sensor_class == TemperatureSensor
 
 
 def test_get_sensor_type_traffic():
     """Тест функции _get_sensor_type для типа TRAFFIC"""
-    sensor_class = _get_sensor_type(SensorEnum.TRAFFIC)
+    sensor_class = _get_sensor_type(AvailableSensors.TRAFFIC)
     assert sensor_class == TrafficSensor
 
 

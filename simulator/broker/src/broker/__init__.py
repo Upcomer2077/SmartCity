@@ -14,7 +14,7 @@ async def _get_data():
     async with AsyncSessionLocal() as session:
         result: AsyncScalarResult[SensorData] = await session.stream_scalars(
             select(SensorData)
-            .where(SensorData.isDelivered == False)  # noqa: E712 !Do not disturb
+            .where(SensorData.is_delivered == False)  # noqa: E712 !Do not disturb
             .limit(limit=20000),
             execution_options={"yield_per": 10000},
         )
@@ -24,8 +24,8 @@ async def _get_data():
         async for i in result:
             records_ids.append(i.id)
             sensor_item = batch.records.add()
-            sensor_item.ts = i.ts
-            sensor_item.sensor_id = str(i.sensor_id)
+            sensor_item.ts = i.ts.timestamp()
+            sensor_item.sensor_sn = str(i.sensor_sn)
             sensor_item.value = i.value
         return records_ids, batch
 

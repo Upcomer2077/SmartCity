@@ -2,7 +2,7 @@ import asyncio
 
 from common.database import AsyncSessionLocal, Sensor, engine
 from common.types import SensorBufferType
-from common.types.enums import SensorEnum
+from common.types.enums import AvailableSensors
 from sqlalchemy import select
 
 from sensorapi.generator import launch_generator
@@ -15,13 +15,13 @@ from sensorapi.sensors.traffic.trafficSensor import TrafficSensor
 shared_queue: asyncio.Queue[SensorBufferType] = asyncio.Queue()
 
 
-def _get_sensor_type(sensor_type: SensorEnum):
+def _get_sensor_type(sensor_type: AvailableSensors):
     match sensor_type:
-        case SensorEnum.AIR_Q:
+        case AvailableSensors.AIR_Q:
             return AirSensor
-        case SensorEnum.TEMP:
+        case AvailableSensors.TEMP:
             return TemperatureSensor
-        case SensorEnum.TRAFFIC:
+        case AvailableSensors.TRAFFIC:
             return TrafficSensor
 
 
@@ -35,7 +35,7 @@ async def launch_sensors():
             )
 
             typed_sensors = [
-                _get_sensor_type(sensor.type)(sensor.sensor_id, shared_queue)
+                _get_sensor_type(sensor.type)(sensor.serial_number, shared_queue)
                 async for sensor in result
             ]
 

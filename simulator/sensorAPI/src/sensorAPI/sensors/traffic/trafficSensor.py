@@ -13,7 +13,7 @@ class TrafficSensor(BaseSensor):
         return (
             SensorBufferType(
                 {
-                    "sensor_id": self.sensor_id,
+                    "sensor_sn": self.sensor_sn,
                     "value": choice([*VehicleType]).value,
                     "ts": datetime.now().timestamp(),
                 }

@@ -10,5 +10,5 @@ class CoordsType(TypedDict):
 
 class SensorBufferType(TypedDict):
     ts: float
-    value: float | str
-    sensor_id: UUID
+    value: float
+    sensor_sn: UUID

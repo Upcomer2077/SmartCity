@@ -2,7 +2,7 @@ import asyncio
 from random import choice
 
 from common.database import AsyncSessionLocal, Sensor, _Base, engine
-from common.types.enums import SensorEnum
+from common.types.enums import AvailableSensors
 
 
 async def create_sample_sensors(commit: bool = True) -> list[Sensor]:
@@ -14,7 +14,7 @@ async def create_sample_sensors(commit: bool = True) -> list[Sensor]:
         await conn.run_sync(_Base.metadata.create_all)
     sensors = [
         Sensor(
-            type=choice([*SensorEnum]),
+            type=choice([*AvailableSensors]),
             lon=i + 44.222,
             lat=i + 55.222,
         )

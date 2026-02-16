@@ -7,15 +7,15 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
-    Text,
     event,
 )
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm.properties import MappedColumn
 from sqlalchemy.sql.functions import now
 from sqlalchemy.types import UUID, Float, Uuid
 
-from common.types.enums import SensorEnum
+from common.types.enums import AvailableSensors
 
 
 class _Base(DeclarativeBase):
@@ -23,31 +23,34 @@ class _Base(DeclarativeBase):
 
 
 class Sensor(_Base):
-    __tablename__ = "sensor"
+    __tablename__ = "sensors"
 
-    sensor_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    serial_number: Mapped[UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
     lat: Mapped[float] = mapped_column(Float, nullable=False)
     lon: Mapped[float] = mapped_column(Float, nullable=False)
-    type: Mapped[SensorEnum] = mapped_column(Enum(SensorEnum), nullable=False)
+    type: Mapped[AvailableSensors] = mapped_column(
+        Enum(AvailableSensors), nullable=False
+    )
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(server_default=now())
 
-    __table_args__ = (Index("idx_sensor_lat_lon", "lat", "lon", "type", unique=True),)
+    __table_args__ = (Index("idx_sensors_lat_lon", "lat", "lon", "type", unique=True),)
 
 
 class SensorData(_Base):
     __tablename__ = "sensor_data"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    ts: Mapped[float] = mapped_column(Float, nullable=False)
-    sensor_id: Mapped[UUID] = mapped_column(
-        Uuid, ForeignKey("sensor.sensor_id"), nullable=False
+    id: MappedColumn[int] = mapped_column(Integer, name="rowid", primary_key=True)
+    ts: Mapped[datetime] = mapped_column(Float, nullable=False)
+    sensor_sn: Mapped[UUID] = mapped_column(
+        Uuid, ForeignKey("sensors.serial_number"), nullable=False
     )
-    value: Mapped[str] = mapped_column(Text, nullable=False)
-    isDelivered: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    value: Mapped[float] = mapped_column(Float, nullable=False)
+    is_delivered: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     __table_args__ = (
-        Index("idx_sensordata_sensor_ts", "sensor_id", "ts", unique=True),
-        Index("idx_delivery_queue", "id", sqlite_where=(isDelivered == 0)),
+        Index("idx_sensordata_sensor_ts", "sensor_sn", "ts", unique=True),
     )
 
 

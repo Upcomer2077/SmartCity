@@ -6,15 +6,15 @@ from sqlalchemy import UUID
 
 
 class BaseSensor(ABC):
-    __slots__ = ("sensor_id", "_buffer")
+    __slots__ = ("sensor_sn", "_buffer")
 
     def __init__(
         self,
-        sensor_id: UUID,
+        sensor_sn: UUID,
         queue: asyncio.Queue[SensorBufferType],
     ):
         super().__init__()
-        self.sensor_id = sensor_id
+        self.sensor_sn = sensor_sn
         self._buffer = queue
 
     @abstractmethod

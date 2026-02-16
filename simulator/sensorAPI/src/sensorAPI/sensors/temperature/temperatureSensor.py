@@ -14,7 +14,7 @@ class TemperatureSensor(BaseSensor):
                 {
                     "ts": datetime.now().timestamp(),
                     "value": randint(20, 30),
-                    "sensor_id": self.sensor_id,
+                    "sensor_sn": self.sensor_sn,
                 }
             )
             if random() > 0.2

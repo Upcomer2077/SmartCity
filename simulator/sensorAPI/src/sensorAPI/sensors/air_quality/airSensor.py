@@ -12,7 +12,7 @@ class AirSensor(BaseSensor):
         return (
             SensorBufferType(
                 {
-                    "sensor_id": self.sensor_id,
+                    "sensor_sn": self.sensor_sn,
                     "value": randint(60, 80),
                     "ts": datetime.now().timestamp(),
                 }
