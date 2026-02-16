@@ -10,12 +10,13 @@ help:
 	@echo. & \
 	echo Available commands: & \
 	echo --------------------------------------------------------------------------- & \
-	echo make gen-mig   		- Generate new migration (params: m="msg", id="id") & \
+	echo make gen-mig  			- Generate new migration (params: m="msg", id="id") & \
 	echo make up                - Apply all migrations (upgrade head) & \
 	echo make downgrade         - Rollback last migration (downgrade -1) & \
 	echo make help              - Show this help message & \
 	echo --------------------------------------------------------------------------- & \
 	echo.
+
 
 
 gen-mig:
@@ -26,5 +27,3 @@ up:
 
 downgrade:
 	$(AL) downgrade -1
-
-	
