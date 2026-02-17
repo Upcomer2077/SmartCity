@@ -1,7 +1,8 @@
 import asyncio
 import os
 
-from common.database import AsyncSessionLocal, SensorData, engine
+from common import DBManager
+from common.database import SensorData
 from kafka.errors import KafkaTimeoutError, NoBrokersAvailable
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio.result import AsyncScalarResult
@@ -18,7 +19,7 @@ async def _get_data():
 
     :return: A tuple containing a list of record IDs and the Protobuf batch object.
     """
-    async with AsyncSessionLocal() as session:
+    async with DBManager.ASYNC_SESSION_LOCAL() as session:
         result: AsyncScalarResult[SensorData] = await session.stream_scalars(
             select(SensorData)
             .where(SensorData.is_delivered == False)  # noqa: E712 !Do not disturb
@@ -76,7 +77,7 @@ async def launch_broker():
 
     finally:
         try:
-            await engine.dispose()
+            await DBManager.GET_ENGINE_INSTANCE().dispose()
         except Exception:
             print("Cannot dispose engine")
         print("👋 Broker stopped")

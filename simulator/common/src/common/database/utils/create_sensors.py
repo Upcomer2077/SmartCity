@@ -1,7 +1,8 @@
 import asyncio
 from random import choice
 
-from common.database import AsyncSessionLocal, Sensor, engine
+from common import DBManager
+from common.database import Sensor
 from common.types.enums import AvailableSensors
 
 
@@ -20,10 +21,10 @@ async def create_sample_sensors(commit: bool = True) -> list[Sensor]:
     ]
 
     if commit:
-        async with AsyncSessionLocal() as session:
+        async with DBManager.ASYNC_SESSION_LOCAL() as session:
             session.add_all(sensors)
             await session.commit()
-    await engine.dispose()
+    await DBManager.GET_ENGINE_INSTANCE().dispose()
     return sensors
 
 
@@ -32,4 +33,4 @@ if __name__ == "__main__":
         created = asyncio.run(create_sample_sensors())
         print(f"Created {len(created)} sensors")
     finally:
-        asyncio.run(engine.dispose())
+        asyncio.run(DBManager.GET_ENGINE_INSTANCE().dispose())

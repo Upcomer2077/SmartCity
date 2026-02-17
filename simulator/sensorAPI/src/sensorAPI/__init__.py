@@ -1,6 +1,7 @@
 import asyncio
 
-from common.database import AsyncSessionLocal, Sensor, engine
+from common import DBManager
+from common.database import Sensor
 from common.types import SensorBufferType
 from sqlalchemy import select
 
@@ -23,7 +24,7 @@ async def launch_sensors():
     """
     try:
         # Fetch sensors from DB with streaming for memory efficiency
-        async with AsyncSessionLocal() as session:
+        async with DBManager.ASYNC_SESSION_LOCAL() as session:
             result = await session.stream_scalars(
                 select(Sensor), execution_options={"yield_per": 200}
             )
@@ -51,7 +52,7 @@ async def launch_sensors():
     # Cleanup database connections and engine resources
     finally:
         try:
-            await engine.dispose()
+            await DBManager.GET_ENGINE_INSTANCE().dispose()
         except Exception:
             print("Cannot dispose engine")
         print("👋 Sensors stopped")

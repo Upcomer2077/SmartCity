@@ -1,6 +1,7 @@
 import asyncio
 
-from common.database import AsyncSessionLocal, SensorData
+from common import DBManager
+from common.database import SensorData
 from common.types import SensorBufferType
 from sqlalchemy import insert
 
@@ -24,7 +25,7 @@ async def _dump_queue(buffer: asyncio.Queue[SensorBufferType]):
         if not batch:
             continue
 
-        async with AsyncSessionLocal() as session:
+        async with DBManager.ASYNC_SESSION_LOCAL() as session:
             async with session.begin():
                 await session.execute(
                     insert(SensorData),
