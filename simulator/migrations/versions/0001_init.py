@@ -2,7 +2,7 @@
 
 Revision ID: 0001
 Revises: 
-Create Date: 2026-02-16 19:12:05.251651
+Create Date: 2026-02-17 13:07:21.365317
 
 """
 from typing import Sequence, Union
@@ -37,7 +37,7 @@ def upgrade() -> None:
     sa.Column('sensor_sn', sa.Uuid(), nullable=False),
     sa.Column('value', sa.Float(), nullable=False),
     sa.Column('is_delivered', sa.Boolean(), nullable=False),
-    sa.ForeignKeyConstraint(['sensor_sn'], ['sensors.serial_number'], ),
+    sa.ForeignKeyConstraint(['sensor_sn'], ['sensors.serial_number'], name='fkssn', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('rowid')
     )
     op.create_index('idx_sensordata_sensor_ts', 'sensor_data', ['sensor_sn', 'ts'], unique=True)

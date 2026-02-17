@@ -2,34 +2,16 @@ import asyncio
 
 from common.database import AsyncSessionLocal, Sensor, engine
 from common.types import SensorBufferType
-from common.types.enums import AvailableSensors
 from sqlalchemy import select
 
 from sensorapi.generator import launch_generator
 from sensorapi.keeper import start_keeper
-from sensorapi.sensors.air_quality.airSensor import AirSensor
-from sensorapi.sensors.baseSensor import BaseSensor
-from sensorapi.sensors.temperature.temperatureSensor import TemperatureSensor
-from sensorapi.sensors.traffic.trafficSensor import TrafficSensor
+from sensorapi.sensors.registry import SensorRegistry
+from sensorapi.utils.get_sensor_type import get_sensor_type
 
 # Global buffer for cross-task sensor data exchange
 shared_queue: asyncio.Queue[SensorBufferType] = asyncio.Queue()
-
-
-def _get_sensor_type(sensor_type: AvailableSensors):
-    """
-    Factory mapping for sensor class instantiation.
-
-    :param sensor_type: Enum value representing the sensor category.
-    :return: Concrete sensor class reference.
-    """
-    match sensor_type:
-        case AvailableSensors.AIR_Q:
-            return AirSensor
-        case AvailableSensors.TEMP:
-            return TemperatureSensor
-        case AvailableSensors.TRAFFIC:
-            return TrafficSensor
+registry: SensorRegistry
 
 
 async def launch_sensors():
@@ -40,21 +22,21 @@ async def launch_sensors():
     and runs concurrent generation and persistence tasks.
     """
     try:
-        typed_sensors: list[BaseSensor]
-
         # Fetch sensors from DB with streaming for memory efficiency
         async with AsyncSessionLocal() as session:
             result = await session.stream_scalars(
                 select(Sensor), execution_options={"yield_per": 200}
             )
 
-            typed_sensors = [
-                _get_sensor_type(sensor.type)(sensor.serial_number, shared_queue)
-                async for sensor in result
-            ]
+            registry = SensorRegistry(
+                [
+                    get_sensor_type(sensor.type)(sensor.serial_number, shared_queue)
+                    async for sensor in result
+                ]
+            )
 
         # Fire and forget background workers
-        sensor_task = launch_generator(typed_sensors)
+        sensor_task = launch_generator(registry)
         keeper_task = start_keeper(shared_queue)
 
         # Keep the application running until tasks are canceled

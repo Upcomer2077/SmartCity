@@ -1,9 +1,9 @@
 import asyncio
 
-from sensorapi.sensors.baseSensor import BaseSensor
+from sensorapi.sensors.registry import SensorRegistry
 
 
-async def _start_sensors(sensor_list: list[BaseSensor]):
+async def _start_sensors(sensor_registry: SensorRegistry):
     """
     Main simulation loop for sensor data generation.
 
@@ -14,18 +14,18 @@ async def _start_sensors(sensor_list: list[BaseSensor]):
     while True:
         start_time = asyncio.get_event_loop().time()
 
-        for s in sensor_list:
+        for s in sensor_registry:
             s.tick()
 
         end_time = asyncio.get_event_loop().time()
         await asyncio.sleep(max(0, 3.0 - (end_time - start_time)))
 
 
-def launch_generator(sensor_list: list[BaseSensor]):
+def launch_generator(sensor_registry: SensorRegistry):
     """
     Spawns the sensor simulation loop as a background task.
 
-    :param sensor_list: List of initialized sensor instances to simulate.
+    :param sensor_registry: Registry of initialized sensor instances to simulate.
     :return: Handle to the running generator task.
     """
-    return asyncio.create_task(_start_sensors(sensor_list))
+    return asyncio.create_task(_start_sensors(sensor_registry))

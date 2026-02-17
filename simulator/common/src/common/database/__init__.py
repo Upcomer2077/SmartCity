@@ -54,7 +54,9 @@ class SensorData(_Base):
     id: MappedColumn[int] = mapped_column(Integer, name="rowid", primary_key=True)
     ts: Mapped[datetime] = mapped_column(Float, nullable=False)
     sensor_sn: Mapped[UUID] = mapped_column(
-        Uuid, ForeignKey("sensors.serial_number"), nullable=False
+        Uuid,
+        ForeignKey("sensors.serial_number", ondelete="CASCADE", name="fkssn"),
+        nullable=False,
     )
     value: Mapped[float] = mapped_column(Float, nullable=False)
     is_delivered: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
