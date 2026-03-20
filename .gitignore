@@ -358,5 +358,5 @@ vite.config.ts.timestamp-*
 .vite/
 
 *.db*
-*_pb2.py*
+# *_pb2.py*
 todo.md

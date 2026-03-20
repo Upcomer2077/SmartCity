@@ -1,8 +1,8 @@
 import sys
 
+from consumer.sensor_data_pb2 import SensorBatch
 from kafka import KafkaConsumer
 
-from consumer.sensor_data_pb2 import SensorBatch
 
 consumer = KafkaConsumer("topic", bootstrap_servers=["localhost:29092"])
 

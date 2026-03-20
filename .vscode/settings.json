@@ -8,6 +8,6 @@
     "settings.json",
     ".pylintrc"
   ],
-  "cSpell.words": ["acks", "sessionmaker"],
-  "python.languageServer": "None" //For Cursor AI python
+  "cSpell.words": ["acks", "sessionmaker"]
+  // "python.languageServer": "None" //For Cursor AI python
 }
