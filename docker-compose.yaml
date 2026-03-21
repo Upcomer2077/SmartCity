@@ -35,7 +35,10 @@ services:
     networks:
       - simulatorNET
     volumes:
+    # TODO: fix dis hsit
       - ./simulator/db.db:/simulator/db.db
+      - ./simulator/db.db-shm:/simulator/db.db-shm
+      - ./simulator/db.db-wal:/simulator/db.db-wal
     profiles: [ simulator ]
 
   sim_pusher:
@@ -50,6 +53,8 @@ services:
         condition: service_healthy
     volumes:
       - ./simulator/db.db:/simulator/db.db
+      - ./simulator/db.db-shm:/simulator/db.db-shm
+      - ./simulator/db.db-wal:/simulator/db.db-wal
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     profiles: [ simulator ]
