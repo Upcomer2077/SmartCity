@@ -1,12 +1,11 @@
 import uuid
 from datetime import datetime
 
+from common.types.enums import AvailableSensors
 from sqlalchemy import Boolean, Enum, ForeignKey, Index, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, MappedAsDataclass, mapped_column
 from sqlalchemy.sql.functions import now
-from sqlalchemy.types import UUID, Float, Uuid
-
-from common.types.enums import AvailableSensors
+from sqlalchemy.types import UUID, Float
 
 
 class _Base(MappedAsDataclass, DeclarativeBase):
@@ -24,10 +23,11 @@ class Sensor(_Base):
     lat: Mapped[float] = mapped_column(Float, nullable=False)
     lon: Mapped[float] = mapped_column(Float, nullable=False)
     type: Mapped[AvailableSensors] = mapped_column(
-        Enum(AvailableSensors), nullable=False
+        Enum(AvailableSensors, values_callable=lambda e: [x.name for x in e]),
+        nullable=False,
     )
     serial_number: Mapped[UUID] = mapped_column(
-        Uuid, primary_key=True, default=uuid.uuid4
+        UUID(as_uuid=True), primary_key=True, default_factory=uuid.uuid4
     )
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(server_default=now(), init=False)
@@ -43,9 +43,9 @@ class SensorData(_Base):
 
     __tablename__ = "sensor_data"
     id: Mapped[int] = mapped_column(Integer, name="rowid", primary_key=True, init=False)
-    ts: Mapped[datetime] = mapped_column(Float, nullable=False, init=False)
-    sensor_sn: Mapped[UUID] = mapped_column(
-        Uuid,
+    ts: Mapped[float] = mapped_column(Float, nullable=False, init=False)
+    sensor_sn: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
         ForeignKey("sensors.serial_number", ondelete="CASCADE", name="fkssn"),
         nullable=False,
         init=False,

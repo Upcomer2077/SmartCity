@@ -1,14 +1,13 @@
 import asyncio
 import os
 
+from broker import sensor_data_pb2
+from broker.brokers.kafka_broker import KafkaBroker
 from common import DBManager
 from common.database import SensorData
 from kafka.errors import KafkaTimeoutError, NoBrokersAvailable
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio.result import AsyncScalarResult
-
-from broker import sensor_data_pb2
-from broker.brokers.kafka_broker import KafkaBroker
 
 
 async def _get_data():
@@ -32,7 +31,7 @@ async def _get_data():
         async for i in result:
             records_ids.append(i.id)
             sensor_item = batch.records.add()
-            sensor_item.ts = i.ts.timestamp()
+            sensor_item.ts = i.ts
             sensor_item.sensor_sn = str(i.sensor_sn)
             sensor_item.value = i.value
         return records_ids, batch
