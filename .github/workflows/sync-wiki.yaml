@@ -1,0 +1,26 @@
+name: Sync Docs to GitHub Wiki
+
+on:
+  push:
+    branches:
+      - main
+      - doc-test
+    paths:
+      - 'docs/**'
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    # Даем права на запись, если используешь стандартный GITHUB_TOKEN
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Push to Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          path: ./docs
+          # ИСПРАВЛЕНО: параметр называется 'token', а не 'github_token'
+          token: ${{ secrets.GITHUB_TOKEN }} 
