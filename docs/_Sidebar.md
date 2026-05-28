@@ -12,3 +12,4 @@
 * **4. Процессы**
   * [[Авторизация|sequence_auth]]
   * [[Потоковая телеметрия|sequence_telemetry]]
+  * [[Use cases|use_cases]]
