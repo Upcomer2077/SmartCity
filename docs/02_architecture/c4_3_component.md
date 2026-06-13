@@ -1,6 +1,6 @@
-# 🧩 C4 Architecture: Level 3 - Component Diagram (Core Backend)
+# 🧩 C4 Architecture: Level 3 - Component Diagram (Core Backend, Simulator)
 
-This diagram details the internal software modules, controllers, and services inside the **Core Backend (FastAPI)** container and maps their interfaces to adjacent system containers.
+This diagram details the internal software modules, controllers, and services inside the **Core Backend (Python)** container and maps their interfaces to adjacent system containers.
 
 ```mermaid
 ---
@@ -75,4 +75,41 @@ flowchart TB
     Ingestor -->|Pushes data| DBManager
     CacheManager -->|CRUD| Redis
     DBEngine -->|CRUD| Timescale
+```
+
+Next diagram describes the internal software modules and services inside the **Simulator** context and maps their interfaces to adjacent system containers.
+
+```mermaid
+flowchart TB
+  %% Ingestion & Brokers
+  Kafka["📟 Message Broker\n(Apache Kafka)\n\nHandles high-throughput,\ndecoupled ingestion of\ntelemetry data streams."]
+  subgraph Simulator
+      Core["🧩 Core\n(python)\nRuns async tasks\nOrchestrator"]
+     
+      Edge[("💾 Edge buffer\n(sqlite)\nLite database for storing data\nbefore flushing")]
+      EdgeCore["⚙️ Database core\n(sqlalchemy)\nHolds database engine"]
+      EdgeManager["💼 Edge buffer manager\n(sqlalchemy)\nManages CRUD operations"]
+
+      Sensor["🔄 IoT Sensors\n(python)\nGenerates raw metric streams"]
+      AQueue[("💾 Buffer\n(asyncio)\nAsync queue\nfor data flow")]
+      Poller["🚦 Poller\n(python)\nPolls sensors\n and buffers data"]
+      Collector["📦 Collector\n(python)\nAggregates metrics from Emitter\n and persists them\n into the Edge Buffer"]
+      
+      Transmitter["📡 Transmitter\n(python-kafka)\nAsynchronously drains\n the Edge Buffer\nand flushes metrics to broker"]
+
+      Logger["📜 Logger\n(Winston)\nProvides global logger API"]
+      end
+
+    Sensor -->|Pooling| Poller -->|Flush raw| AQueue -->|Collects data| Collector --> EdgeManager -->|Aggregates & saves| EdgeCore -->|Uses driver| Edge
+    EdgeManager <-->|Drains available\nand notifies about it | Transmitter
+    Core -->|Async Starts| Sensor
+    Core -->|Async Starts| Poller
+    Core -->|Starts| Collector
+    Core -->|Initializes| AQueue
+    Core -->|Starts| EdgeCore
+    Core -->|Initializes| EdgeManager
+    Core -->|Initializes| Logger
+    Core -->|Async Starts| Transmitter
+
+    Transmitter -->|Flush| Kafka
 ```
