@@ -53,7 +53,7 @@ async def launch_broker():
         while True:
             _records_ids, batch = await _get_data()
             batch_len = str(len(batch.records))
-
+            #TODO: fix 0 str
             if batch_len == 0:
                 continue
 
