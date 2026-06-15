@@ -51,9 +51,10 @@ flowchart TB
     Admin -->|Manages inventory via HTTPS| GatewayAPI
     GatewayAPI -->|Grabs application files| WebUI
 
-    WebUI -->|Queries historical charts\n& authenticates via REST API| Core
-    WebUI <-->|Receives live stream telemetry via WebSockets| Core
-    
+    GatewayAPI -->|Queries historical charts\n& authenticates via REST API| Core
+    GatewayAPI <-->|Live stream telemetry via WebSockets| Core
+    WebUI ---|Connected via GatewayAPI|Core
+
     Emitter -->|"Collector polls data"| Collector
     Collector -->|"Transmitter pulls up data"| Transmitter
     Transmitter -->|Sending bunch of data via TCP| Kafka

@@ -1,20 +1,27 @@
-# 🌆 Документация проекта SmartCity
+# 🌆 SmartCity Project Documentation
 
-Добро пожаловать в техническую базу знаний системы **SmartCity**. Здесь собрано полное описание архитектуры, структуры данных и ключевых сценариев работы платформы.
+Welcome to the SmartCity technical knowledge base. It contains a complete description of the platform's architecture, data structure, and key operational scenarios.
 
-## 🚀 Быстрый старт по разделам
+## 🚀 Quick Start by Section
 
-### 🏗️ Архитектурные требования и C4
-* [Цели архитектуры](architecture_goals) — базовые бизнес- и технические цели.
-* [C4: Контекст](c4_1_context) — границы системы и взаимодействие с пользователями.
-* [C4: Контейнеры](c4_2_container) — приложения, сервисы и хранилища данных.
+### 🏗️ Architectural Requirements and C4
 
-### 📊 Модели данных
-* [Словарь данных](data_dictionary) — описание терминов и сущностей.
-* [ER-диаграмма](ER_diagram) — логическая схема связей в БД.
+* [Architecture Goals] (architecture_goals) — basic business and technical goals.
+* [C4: Context] (c4_1_context) — system boundaries and user interactions.
+* [C4: Containers] (c4_2_container) — applications, services, and data warehouses.
 
-### ⚙️ Процессы и Сценарии
-* [Use Cases](use_cases) — основные пользовательские кейсы.
-* [Сценарии авторизации](sequense_auth) и [Телеметрия](sequence_telemetry).
+### 📊 Data Models
+
+* [Data Dictionary] (data_dictionary) — description of terms and entities.
+* [ER Diagram] (ER_diagram) — logical diagram of relationships in the database.
+
+### ⚙️ Processes and Scenarios
+
+* [Use Cases](use_cases) — basic user cases.
+* [Authorization Scenarios](sequence_auth) and [Telemetry](sequence_telemetry).
+
+---
+
+### 🖥️ [Kanban](<https://github.com/users/Upcomer2077/projects/2>) board
 
 ---

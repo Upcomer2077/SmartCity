@@ -1,116 +1,127 @@
-# 🏙️ Техническое задание: Платформа SmartCity
-**Интеллектуальная система мониторинга и анализа городской инфраструктуры**
+# 🏙️ Technical Specifications: SmartCity Platform
+
+## **Intelligent system for monitoring and analyzing urban infrastructure**
 
 ---
 
-## 1. Общие сведения
+## 1. General information
 
-* **Название проекта:** SmartCity
-* **Цель разработки:** Создание высоконагруженной веб-платформы для агрегации, обработки, анализа и визуализации телеметрических данных, поступающих в режиме реального времени от распределенной сети IoT-датчиков (интенсивность дорожного движения, метеорологические показатели, экологический мониторинг атмосферы).
+- **Project Name:** SmartCity
+- **Development Goal:** To create a high-load web platform for aggregating, processing, analyzing, and visualizing telemetry data received in real time from a distributed network of IoT sensors (traffic intensity, meteorological indicators, environmental atmospheric monitoring).
 
-### 👥 Сценарии использования и ролевая модель
+### 👥 Use cases and role model
 
-#### **Роль: Гость (Неавторизованный пользователь)**
-* **Свободный доступ:** Просмотр интерактивной карты мира с нанесенными геометками активных IoT-модулей и возможностью фильтрации по типам измеряемых параметров.
-* **Режим ожидания:** При отсутствии выбранного датчика отображается информационный виджет с общим количеством функционирующих устройств в системе и локальным временем текущего часового пояса.
-* **Детализация данных:** При выборе конкретного сенсора открывается панель с краткой сводкой по региону и динамическим графиком исторических показателей.
-* **Прогнозирование:** Инициация запроса на построение предиктивной аналитики по нажатию на выделенную кнопку.
+#### **Role: Guest (Unauthorized User)**
 
-#### **Роль: Администратор**
-* **Аутентификация:** Защищенный вход в систему через специализированную форму авторизации.
-* **Управление сущностями:** Доступ к административной панели с табличным интерфейсом для CRUD-операций над метаданными точек мониторинга и конфигурациями сенсоров.
+- **Free Access:** View an interactive world map with geotagged active IoT modules and the ability to filter by measured parameter types.
+- **Standby Mode:** If no sensor is selected, an information widget is displayed with the total number of functioning devices in the system and the local time of the current time zone.
+- **Data Details:** Selecting a specific sensor opens a panel with a brief regional summary and a dynamic graph of historical indicators.
+- **Forecasting:** Initiate a request to build predictive analytics by clicking the dedicated button.
 
-### 🎯 Ключевые задачи системы
-* **Инжестия данных:** Прием и обработка высокоинтенсивных потоков телеметрии от IoT-устройств в реальном времени.
-* **Хранение:** Накопление, структурирование и архивация исторических данных в аналитическом хранилище.
-* **Интерфейсы доступа:** Предоставление низкозадержковых REST API и WebSocket-соединений для клиентских приложений.
-* **Аналитика:** Визуализация текущего состояния инфраструктуры и генерация прогнозных моделей по требованию.
-* **Надежность:** Обеспечение горизонтального масштабирования, сквозного логирования, покрытия тестами и непрерывного мониторинга компонентов.
+#### **Role: Administrator**
 
----
+- **Authentication:** Secure login via a dedicated authorization form.
+- **Entity Management:** Access to the administrative panel with a table interface for CRUD operations on monitoring point metadata and sensor configurations.
 
-## 2. Архитектура системы
+### 🎯 Key System Tasks
 
-Платформа представляет собой распределенную микросервисную архитектуру, состоящую из пяти ключевых слоев.
-
-### 🖥️ 2.1. Frontend-слой
-* **Стек:** NuxtJS 3 (TypeScript), Bootstrap UI (адаптивная верстка).
-* **Безопасность:** Авторизация на базе JWT; хранение Access-токенов в памяти приложения, Refresh-токенов — в защищенных HttpOnly Cookies.
-* **Транспорт:** Постоянное WebSocket-подключение для реактивного обновления дашбордов.
-* **Интерфейсы:** Интерактивная карта, аналитические графики, предиктивные экраны и изолированный модуль администрирования.
-
-### ⚙️ 2.2. Backend-слой (Ядро системы)
-* **Базовый стек:** FastAPI (Python 3.14), Pydantic (строгая валидация контрактов данных).
-* **Слой данных:** SQLAlchemy ORM, СУБД TimescaleDB (реляционное хранилище метаданных и агрегатов).
-* **Кеширование и брокеры:** Redis (быстрый кеш, распределенные сессии), Apache Kafka (отказоустойчивая шина входящих IoT-событий).
-* **Интеграции:** gRPC-клиент для связи с аналитическим модулем, WebSocket-сервер для широковещательной трансляции метрик фронтенду.
-* **Инфраструктура:** Docker для контейнеризации, Nginx в качестве Reverse Proxy и маршрутизатора запросов.
-
-### 📟 2.3. Модуль имитации IoT-датчиков
-* **Реализация:** Автономный легковесный микросервис на Python (`python-kafka`).
-* **Формат события:** JSON-сообщение, содержащее `sensor_id`, `data_type` (traffic, temperature, air_quality), `value` (float) и `timestamp`.
-* **Интенсивность:** Дискретная отправка пакетов в соответствующие топики Kafka с интервалом в 1–3 секунды.
-
-### 🧠 2.4. Аналитический модуль
-* **Реализация:** Изолированный высокопроизводительный gRPC-сервис.
-* **Функционал:** Обработка входящих векторов данных от Backend-ядра, применение ML-моделей для расчета трендов (изменение температурных режимов, динамика индексов загрязнения) и возврат прогнозных матриц.
-
-### 🚀 2.5. DevOps и Инфраструктура
-* **Оркестрация:** Развертывание и управление жизненным циклом контейнеров в кластере Kubernetes.
-* **CI/CD:** Автоматизированные конвейеры на базе GitHub Actions.
-* **Наблюдаемость (Observability):** Prometheus (сбор метрик), Grafana + Loki (визуализация, лог-аналитика, централизованный алертинг).
-* **Балансировка:** GatewayAPI для распределения входящего трафика.
+- **Data Injection:** Receiving and processing high-intensity telemetry streams from IoT devices in real time.
+- **Storage:** Accumulating, structuring, and archiving historical data in an analytical warehouse.
+- **Access Interfaces:** Providing low-latency REST API and WebSocket connections for client applications.
+- **Analytics:** Visualizing the current state of the infrastructure and generating predictive models on demand.
+- **Reliability:** Provides horizontal scalability, end-to-end logging, test coverage, and continuous component monitoring.
 
 ---
 
-## 📊 3. Требования к системе
+## 2. System Architecture
 
-### 3.1. Функциональные требования
+The platform is a distributed microservice architecture consisting of five key layers.
 
+### 🖥️ 2.1. Frontend Layer
 
-| Роль | Возможности |
-| :--- | :--- |
-| **Гость** | Просмотр общих дашбордов и интерактивной карты (без авторизации). |
-| **Администратор** | Управление пользователями, настройка и CRUD датчиков, просмотр системных логов. |
+- **Stack:** `NuxtJS 3` (TypeScript), `Bootstrap UI`(responsive layout).
+- **Security:** `JWT-based` authorization; Access tokens stored in application memory, Refresh tokens stored in secure HttpOnly cookies.
+- **Transport:** Persistent `WebSocket` connection for reactive dashboard updates.
+- **Interfaces:** Interactive map, analytical charts, predictive screens, and an isolated administration module.
 
-### ⚡ 3.2. Нефункциональные требования
+### ⚙️ 2.2. Backend Layer (System Core)
 
-* **Производительность:** Поддержка входящего потока данных интенсивностью до **10 000 сообщений в секунду** из Apache Kafka.
-* **Масштабируемость:** Горизонтальное масштабирование микросервисов (Stateless-компонентов) в Kubernetes.
-* **Надежность:** Коэффициент доступности системы (Uptime) не менее **99.5%**.
-* **Защищенность:** Использование JWT, HTTPS, обеспечение сквозной защиты от уязвимостей XSS и CSRF.
-* **CI/CD:** Полная автоматизация процессов сборки, тестирования и развертывания.
+- **Core Stack:** `FastAPI` (Python 3.14), `Pydantic` (strict data contract validation).
+- **Data Layer:** `SQLAlchemy ORM`, `TimescaleDB` DBMS (relational metadata and aggregate storage).
+- **Caching and Brokers:** `Redis` (fast cache, distributed sessions), `Apache Kafka` (fault-tolerant incoming IoT event bus).
+- **Integrations:** `gRPC` client for communication with the analytics module, WebSocket server for broadcasting metrics to the frontend.
+- **Infrastructure:** `Docker` for containerization, `GatewayAPI/Nginx` as a reverse proxy and request router.
 
----
+### 📟 2.3. IoT Sensor Simulation Module
 
-## 🧪 4. Стратегия тестирования
+- **Implementation:** A standalone lightweight Python microservice (`python-kafka`).
+- **Event Format:** A JSON message containing `sensor_id`, `data_type` (traffic, temperature, air_quality), `value` (float), and `timestamp`.
+- **Rate:** Discrete sending of packets to the corresponding `Kafka` topics at intervals of 1–3 seconds.
 
-### 🎨 4.1. Frontend-тестирование
-* **Unit-тесты:** `Jest` + `Vue Test Utils` (проверка изолированной логики компонентов).
-* **E2E-тесты:** `Cypress` (валидация сквозных пользовательских сценариев).
-* **Регрессия интерфейса:** `Storybook` + `Chromatic` (визуальный контроль изменений UI).
-* **Доступность:** `axe-core` (проверка доступности интерфейса).
-* **Статический анализ:** `ESLint` + `Prettier`.
+### 🧠 2.4. Analytics Module
 
-### 💾 4.2. Backend-тестирование
-* **Unit-тесты:** `Pytest` (проверка корректности API и бизнес-логики).
-* **Интеграционные тесты:** `Docker Compose` + `Pytest` (эмуляция связок FastAPI ↔ DB ↔ Kafka).
-* **Нагрузочное тестирование:** `Locust` (измерение предельной производительности системы).
-* **Тестирование API:** `Postman` / `Newman` для верификации REST-эндпоинтов.
-* **Безопасность:** Инструменты автоматизированного и ручного сканирования `OWASP ZAP`.
-* **Статический анализ:** Проверка типов через `mypy` и линтинг через `flake8`.
+- **Implementation:** Isolated high-performance gRPC service.
+- **Functionality:** Processing incoming data vectors from the Backend core, using ML models to calculate trends (temperature changes, pollution index dynamics), and returning prediction matrices.
 
-### ⚙️ 4.3. Инфраструктурные тесты (DevOps)
-* Валидация шагов сборки и тестов в пайплайне GitHub Actions при фиксации изменений в ветке `main`.
-* Проведение автоматических Smoke-тестов контейнеров непосредственно после деплоя в кластер Kubernetes.
-* Непрерывный мониторинг доступности и метрик сервисов через Prometheus.
+### 🚀 2.5. DevOps and Infrastructure
+
+- **Orchestration:** Deployment and lifecycle management of containers in a Kubernetes cluster.
+- **CI/CD:** Automated pipelines based on `GitHub Actions`.
+- **Observability:** `Prometheus` (metrics collection), `Grafana` + `Loki` (visualization, log analytics, centralized alerting).
+- **Balancing:** `GatewayAPI` for distributing incoming traffic.
 
 ---
 
-## 📂 5. Управление документацией
+## 📊 3. System Requirements
 
-* **Локация:** Все артефакты проектирования консолидируются в директории `docs/` в корне репозитория.
-* **Стандартизация:** Моделирование архитектуры выполняется по методологии **C4 Pattern** с использованием синтаксиса `mermaid`.
-* **Синхронизация:** Настроена автоматическая интеграция локальных markdown-файлов с GitHub Wiki проекта.
-* **Глубина описания:** Документация описывает текущее состояние системы и каждый слой по C4. В качестве слоя 4 (Code) выступают Use-Case, ER, Sequence и Class-диаграммы.
-* **Точка входа:** Файл `README.md` в корне репозитория содержит краткое описание архитектуры, инструкции по запуску и ссылку на Kanban-доску проекта.
+### 3.1. Functional Requirements
+
+| Role | Capabilities |
+| ----------------- | ---------------------------------------------------------------------------------------------- |
+| **Guest** | View shared dashboards and the interactive map (without authorization). |
+| **Administrator** | User management, configuration and CRUD sensors, viewing system logs. |
+
+### ⚡ 3.2. Non-functional Requirements
+
+- **Performance:** Support for incoming data flows of up to **10,000 messages per second** from Apache Kafka.
+- **Scalability:** Horizontal scaling of microservices (stateless components) in Kubernetes.
+- **Reliability:** System availability (uptime) of at least **99.5%**.
+- **Security:** Use of JWT, HTTPS, and end-to-end protection against XSS and CSRF vulnerabilities.
+- **CI/CD:** Fully automated build, testing, and deployment processes.
+
+---
+
+## 🧪 4. Testing Strategy
+
+### 🎨 4.1. Frontend Testing
+
+- **Unit Tests:** `Jest` + `Vue Test Utils` (testing isolated component logic).
+- **E2E Tests:** `Cypress` (validation of end-to-end user flows).
+- **UI Regression:** `Storybook` + `Chromatic` (visual inspection of UI changes).
+- **Accessibility:** `axe-core` (checking interface accessibility).
+- **Static Analysis:** `ESLint` + `Prettier`.
+
+### 💾 4.2. Backend Testing
+
+- **Unit Tests:** `Pytest` (checking API and business logic correctness).
+- **Integration tests**: `Docker Compose` + `Pytest` (emulating FastAPI ↔ DB ↔ Kafka).
+- **Load testing**: `Locust` (measuring system performance limits).
+- **API testing**: `Postman` / `Newman` for REST endpoint verification.
+- **Security**: `OWASP ZAP` automated and manual scanning tools.
+- **Static analysis**: Type checking with `mypy` and linting with flake8.
+
+### ⚙️ 4.3. Infrastructure Testing (DevOps)
+
+- Validation of build steps and tests in the GitHub Actions pipeline when committing changes to the `main` branch.
+- Conducting automated smoke tests of containers immediately after deployment to a Kubernetes cluster.
+- Continuous monitoring of service availability and metrics via `Prometheus`.
+
+---
+
+## 📂 5. Documentation Management
+
+- **Location:** All design artifacts are consolidated in the `docs/` directory in the repository root.
+- **Standardization:** Architecture modeling is performed using the **C4 Pattern** methodology and the `mermaid` syntax.
+- **Synchronization:** Automatic integration of local Markdown files with the project's GitHub Wiki is configured.
+- **Description Depth:** Documentation describes the current state of the system and each C4 layer. Use-case, ER, and sequence diagrams serve as Layer 4 (Code).
+- **Entry Point:** The `README.md` file in the repository root contains a brief description of the architecture, instructions for launching, and a link to the project's Kanban board.

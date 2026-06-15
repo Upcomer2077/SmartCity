@@ -9,7 +9,7 @@ config:
 ---
 flowchart TB
     %% --- External Containers (C2 Context) ---
-    WebUI["🖥️ Web Application\n(NuxtJS 3 / TypeScript)\n\nServes static content \nand renders reactive dashboards."]
+    GatewayAPI["🟩 Load Balancer/Reverse Proxy\n(GatewayAPI)\n Rate limiter"]
     Redis[("🚀 Cache\n(Redis)")]
     Timescale[("💾 Time-Series Storage\n(TimescaleDB / PostGIS)")]
     Analytics["🧠 Analytics Service\n(gRPC / Python)"]
@@ -69,7 +69,7 @@ flowchart TB
     
     %% --- External Connections 
     gRPCClient -->|Dispatches async requests| Analytics
-    WebUI -->|Routes HTTPS/WS requests| Router
+    GatewayAPI -->|Routes HTTPS/WS requests| Router
     Ingestor -->|Pushes data| CacheManager
     CacheManager -->|Polling| PubSubRelay
     Ingestor -->|Pushes data| DBManager
@@ -100,7 +100,7 @@ flowchart TB
       Logger["📜 Logger\n(Winston)\nProvides global logger API"]
       end
 
-    Sensor -->|Pooling| Poller -->|Flush raw| AQueue -->|Collects data| Collector --> EdgeManager -->|Aggregates & saves| EdgeCore -->|Uses driver| Edge
+    Sensor -->|Sends data via Pooling| Poller -->|Flushes raw data| AQueue -->|Collects data| Collector --> EdgeManager -->|"Aggregates & saves"| EdgeCore -->|Uses driver| Edge
     EdgeManager <-->|Drains available\nand notifies about it | Transmitter
     Core -->|Async Starts| Sensor
     Core -->|Async Starts| Poller
