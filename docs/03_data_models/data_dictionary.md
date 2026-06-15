@@ -12,7 +12,7 @@ The system processes three distinct core sensor topologies. Any incoming telemet
 | :--- | :--- | :--- | :--- |
 | `TEMP` | Ambient Air Temperature | Degrees Celsius (°C) | `-50.0` to `+60.0` |
 | `AIR_Q` | Air Quality Index | AQI (US EPA Standard) | `0.0` to `500.0` |
-| `TRAFFIC` | Vehicle Flow Rate | Vehicles per Minute (VPM)| `0.0` to `300.0` |
+| `TRAFFIC` | Vehicle Flow Rate | Vehicles per Minute (VPM) | `0.0` to `300.0` |
 
 ---
 
@@ -52,8 +52,8 @@ message BulkIngestionPayload {
 
 #### Ingestion Execution Flow
 
-1. The **Transmitter** extracts unsent tracking records from SQLite and structures them internally into the `BulkIngestionPayload` layout.
-2. The **Ingestor Worker** intercepts the binary frame, unpacks it via compiled Python stubs, and resolves each `sensor_sn` string into the internal `sensor_id` from its relational lookup map.
+1. The **Transmitter** extracts unsent tracking records from **Edge** and structures them internally into the `BulkIngestionPayload` layout.
+2. The **Ingestor Worker** intercepts the binary frame, unpacks it via compiled `Python` stubs, and resolves each `sensor_sn` string into the internal `sensor_id` from its relational lookup map.
 3. The **Ingestor** executes a high-speed database `UPSERT` operation across all embedded `data` vectors directly into the TimescaleDB hypertables.
 
 ### 2.2. Outbound Broadcast Contract (Redis Pub/Sub -> FastAPI -> WebSockets)
@@ -96,7 +96,7 @@ Holds the centralized master registry of all verified spatial assets deployed in
 | `serial_number` | `UUID` | `UNIQUE`, `NOT NULL` | Physical hardware asset UUID stamped during factory setup. |
 | `created_by` | `INTEGER` | `FOREIGN KEY`, `NULLABLE` | ID of the `admin` user who registered this hardware node. |
 | `type` | `VARCHAR / ENUM` | `NOT NULL` | Hardware topology classification (`TEMP`, `AIR_Q`, `TRAFFIC`). |
-| `coordinates` | `GEOMETRY(Point, 4326)`| `NOT NULL`, `GiST INDEX` | PostGIS spatial coordinate point storing Longitude & Latitude. |
+| `coordinates` | `GEOMETRY(Point, 4326)` | `NOT NULL`, `GiST INDEX` | PostGIS spatial coordinate point storing Longitude & Latitude. |
 | `created_at` | `TIMESTAMP` | `DEFAULT NOW()` | Record registration clock tick. |
 
 #### Table: `sensor_hyper_data`
@@ -120,7 +120,6 @@ Transactional micro-buffer holding un-flushed telemetry chunks locally on disk.
 | Column Name | Database Data Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `rowid` | `INTEGER` | `PRIMARY KEY` | Auto-incrementing local row sequence index. |
-| `ts` | `FLOAT` | `NOT NULL`, `INDEX (2)`| Local recording timestamp epoch float. |
-| `sensor_sn` | `UUID` | `FOREIGN KEY`, `INDEX (1)`| Cascading relation bound to local `sensors.serial_number`. |
+| `ts` | `FLOAT` | `NOT NULL`, `INDEX (2)` | Local recording timestamp epoch float. |
+| `sensor_sn` | `UUID` | `FOREIGN KEY`, `INDEX (1)` | Cascading relation bound to local `sensors.serial_number`. |
 | `value` | `FLOAT` | `NOT NULL` | Raw measured data point. |
-| `is_delivered` | `BOOLEAN` | `NOT NULL`, `DEFAULT 0`| **[DEPRECATED if using acks=1 direct purge]** State flag. |

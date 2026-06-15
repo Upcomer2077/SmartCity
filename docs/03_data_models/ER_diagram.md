@@ -1,4 +1,8 @@
-# 📊 Data Model: TimescaleDB Schema & ER Diagram
+# 📊 Data Models (Timescale and Edge)
+
+---
+
+## 💾 TimescaleDB Schema & ER Diagram
 
 This document defines the actual relational and time-series database structure generated.
 
@@ -29,6 +33,7 @@ erDiagram
 
     sensors {
         uuid sensor_id PK
+        uuid serial_number UK
         int created_by FK
         enum type "AIR, TEMPERATURE, TRAFFIC"
         geometry coordinates
@@ -103,7 +108,9 @@ SELECT add_compression_policy('sensor_hyper_data', INTERVAL '7 days');
 SELECT add_retention_policy('sensor_hyper_data', INTERVAL '90 days');
 ```
 
-# 💾 Local Data Model: Edge Buffer Database (SQLite)
+---
+
+## 💾 Edge Buffer Database (SQLite)
 
 This document specifies the internal physical storage architecture running locally inside the **IoT Simulator (Edge Unit)** to provide local persistence and network fault tolerance via SQLite.
 
