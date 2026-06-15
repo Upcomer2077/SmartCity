@@ -20,6 +20,10 @@ Welcome to the SmartCity technical knowledge base. It contains a complete descri
 * [Use Cases](use_cases) — basic user cases.
 * [Authorization Scenarios](sequence_auth) and [Telemetry](sequence_telemetry).
 
+### 🔄 Development standarts
+
+* [Rules](rules) - project best pracrices
+
 ---
 
 ### 🖥️ [Kanban](<https://github.com/users/Upcomer2077/projects/2>) board
