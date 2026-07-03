@@ -1,5 +1,5 @@
 BACK_out_path = "../backend/consumer/src/consumer/"
-SIM_out_path = "../simulator/broker/src/broker/"
+SIM_out_path = "../simulator/transmitter/schema/proto/"
 .PHONY: proto_backend proto_sim
 .DEFAULT_GOAL := help
 
@@ -8,8 +8,8 @@ help:
 	@echo ""
 	@echo "Available commands:"
 	@echo "---------------------------------------------------------------------------"
-	@echo "make proto_backend     - Generate proto output for backend
-	@echo "make proto_sim         - Generate proto output for simulator
+	@echo "make proto_backend     - Generate proto output for backend"
+	@echo "make proto_sim         - Generate proto output for simulator"
 	@echo "make help              - Show this help message"
 	@echo "---------------------------------------------------------------------------"
 	@echo ""

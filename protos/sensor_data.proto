@@ -1,13 +1,20 @@
 syntax = "proto3";
 
-// Data Transfer Object for a single sensor measurement
-message SensorDTO  {
-    double ts = 1;
-    string sensor_sn = 2;
-    float value = 3;
+package telemetry;
+
+message TelemetryPoint {
+    float ts = 1;       // Epoch timestamp float coordinate
+    double value = 2;   // Quantifiable scalar dimension metric
 }
 
-// Batch container for multiple sensor records to optimize throughput
-message SensorBatch {
-    repeated SensorDTO records = 1;
+message DeviceDataBatch {
+    string sensor_sn = 1;               // Factory serial number (UUIDv4 string)
+    string type = 2;                    // Metric classification ("TEMP", "AIR_Q", "TRAFFIC")
+    float lat = 3;
+    float lon = 4;
+    repeated TelemetryPoint data = 5;   // Array of historical time-series data points
+}
+
+message BulkIngestionPayload {
+    repeated DeviceDataBatch batches = 1; // Collection of grouped device blocks
 }
