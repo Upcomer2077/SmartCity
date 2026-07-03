@@ -51,10 +51,9 @@ class SensorData(_Base):
         init=False,
     )
     value: Mapped[float] = mapped_column(Float, nullable=False, init=False)
-    is_delivered: Mapped[bool] = mapped_column(
-        Boolean, nullable=False, default=False, init=False
+    created_at: Mapped[datetime] = mapped_column(
+        server_default=now(), nullable=False, init=False, index=True
     )
-
     __table_args__ = (
         Index("idx_sensordata_sensor_ts", "sensor_sn", "ts", unique=True),
     )

@@ -3,10 +3,10 @@ name = "simulator"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = ["python-dotenv>=1.2.2"]
 
 [tool.uv.workspace]
-members = ["common", "broker", "sensorapi"]
+members = ["common", "emitter", "transmitter", "collector"]
 
 [dependency-groups]
-dev = ["alembic>=1.18.3"]
+dev = []

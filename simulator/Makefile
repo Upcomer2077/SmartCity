@@ -1,4 +1,3 @@
-# Переменные
 AL = uv run alembic
 m = "migration_message"
 
@@ -23,5 +22,5 @@ gen-mig:
 up:
 	$(AL) upgrade head
 
-downgrade:
+down:
 	$(AL) downgrade -1
