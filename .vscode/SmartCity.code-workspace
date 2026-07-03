@@ -1,0 +1,52 @@
+{
+  "folders": [
+    {
+      "path": "../",
+    },
+    {
+      "path": "../simulator",
+    },
+    {
+      "path": "../protos",
+    },
+    {
+      "path": "../backend",
+    },
+    {
+      "path": "../analytics",
+    },
+    {
+      "path": "../ci-cd",
+    },
+    {
+      "path": "../docs",
+    },
+    {
+      "path": "../frontend",
+    },
+    {
+      "path": "../kubernetes",
+    },
+    {
+      "path": "../monitoring",
+    },
+    {
+      "path": "../tests",
+    },
+  ],
+  "settings": {
+    "python.analysis.autoImportCompletions": true,
+    "pylint.enabled": false,
+
+    "ruff.enable": true,
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.fixAll": "explicit",
+      },
+    },
+    "python.analysis.typeCheckingMode": "basic",
+  },
+}
