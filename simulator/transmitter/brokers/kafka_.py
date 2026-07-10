@@ -1,6 +1,5 @@
 from aiokafka import AIOKafkaProducer
 
-from config import KAFKA_BOOTSTRAP_SERVER
 from transmitter.brokers import BaseBroker
 
 
@@ -19,7 +18,7 @@ class KafkaBroker(BaseBroker):
         """
         super().__init__()
         self._broker: AIOKafkaProducer
-        self._KAFKA_BOOTSTRAP_SERVERS = btsrp_srvrs
+        self._KAFKA_BOOTSTRAP_SERVER = btsrp_srvrs
 
     async def bring_me_to_life(self):
         """
@@ -27,7 +26,7 @@ class KafkaBroker(BaseBroker):
         Uses Protobuf serialization (SerializeToString) for the payload.
         """
         self._broker = AIOKafkaProducer(
-            bootstrap_servers=KAFKA_BOOTSTRAP_SERVER,
+            bootstrap_servers=self._KAFKA_BOOTSTRAP_SERVER,
             acks=1,
             compression_type="gzip",
             max_request_size=1048576 * 5,

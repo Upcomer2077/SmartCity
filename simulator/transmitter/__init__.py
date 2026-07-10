@@ -4,6 +4,7 @@ from datetime import datetime
 from common.database.uow import IUnitOfWork
 from common.logger_ import mlogger
 
+from config import BROKER_TOPIC
 from transmitter.brokers import BaseBroker
 from transmitter.schema.proto import sensor_data_pb2
 
@@ -55,7 +56,7 @@ async def start_broker(broker: BaseBroker, uow: IUnitOfWork):
         batch_len = len(payload.batches)
 
         if batch_len > 0:
-            await broker.push_to_target("topic", payload.SerializeToString())
+            await broker.push_to_target(BROKER_TOPIC, payload.SerializeToString())
 
             mlogger.info(
                 f"Batch with {batch_len} sensors ({total_rows} records) has been pushed to {broker.get_broker_name()}"
