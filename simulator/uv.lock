@@ -65,7 +65,7 @@ wheels = [
 [[package]]
 name = "collector"
 version = "0.1.0"
-source = { virtual = "collector" }
+source = { editable = "collector" }
 dependencies = [
     { name = "common" },
 ]
@@ -99,7 +99,7 @@ dev = [{ name = "alembic", specifier = ">=1.18.4" }]
 [[package]]
 name = "emitter"
 version = "0.1.0"
-source = { virtual = "emitter" }
+source = { editable = "emitter" }
 dependencies = [
     { name = "common" },
 ]
@@ -265,7 +265,7 @@ wheels = [
 [[package]]
 name = "transmitter"
 version = "0.1.0"
-source = { virtual = "transmitter" }
+source = { editable = "transmitter" }
 dependencies = [
     { name = "aiokafka" },
     { name = "common" },
