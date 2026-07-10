@@ -11,9 +11,7 @@ services:
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      # Добавляем слушатель для внешних подключений на порт 29092
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:29092
-      # Указываем, что для внешних подключений адрес — localhost
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
@@ -27,36 +25,22 @@ services:
       start_period: 60s
     profiles: [ kafka ]
 
-  sim_sensors:
+  simulator:
     build:
-      dockerfile: "Dockerfile.sensor"
+      dockerfile: "Dockerfile"
       context: "./simulator"
-    container_name: Sensors
-    networks:
-      - simulatorNET
-    volumes:
-    # TODO: fix dis hsit
-      - ./simulator/db.db:/simulator/db.db
-      - ./simulator/db.db-shm:/simulator/db.db-shm
-      - ./simulator/db.db-wal:/simulator/db.db-wal
-    profiles: [ simulator ]
-
-  sim_pusher:
-    build:
-      dockerfile: "Dockerfile.broker"
-      context: "./simulator"
-    container_name: Pusher
+    container_name: Simulator
     networks:
       - simulatorNET
     depends_on:
       kafka:
         condition: service_healthy
     volumes:
-      - ./simulator/db.db:/simulator/db.db
-      - ./simulator/db.db-shm:/simulator/db.db-shm
-      - ./simulator/db.db-wal:/simulator/db.db-wal
+      - /tmp/sim:/tmp
+    
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_BOOTSTRAP_SERVER: kafka:9092
+      DB_URL: "sqlite+aiosqlite:////tmp/db.db"
     profiles: [ simulator ]
 # endregion
 
