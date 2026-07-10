@@ -132,6 +132,7 @@ erDiagram
         float ts "Epoch timestamp float coordinate"
         uuid sensor_sn FK "Cascading hardware baseline link"
         float value "Quantifiable dimension metric"
+        datetime created_at "Timestamp for eternal use"
     }
 ```
 

@@ -24,10 +24,10 @@ To enforce sub-millisecond serialization speeds and reduce network bandwidth con
 
 The **Transmitter** drains the local SQLite buffer, groups telemetry points by the hardware asset, and compiles them into a binary **Protocol Buffers (Protobuf)** payload. This architecture dramatically cuts down wire overhead by sending the identity key only once per metrics array block.
 
-* **Kafka Topic:** `city.telemetry`
+* **Kafka Topic:** `telemetry`
 * **Format:** Binary Protobuf Stream
 
-#### Protobuf Schema Specification (`proto/edge_ingestion.proto`)
+#### Protobuf Schema Specification (`proto/sensor_data.proto`)
 
 ```protobuf
 syntax = "proto3";
@@ -42,7 +42,9 @@ message TelemetryPoint {
 message DeviceDataBatch {
     string sensor_sn = 1;               // Factory serial number (UUIDv4 string)
     string type = 2;                    // Metric classification ("TEMP", "AIR_Q", "TRAFFIC")
-    repeated TelemetryPoint data = 3;   // Array of historical time-series data points
+    float lat = 3;
+    float lon = 4;
+    repeated TelemetryPoint data = 5;   // Array of historical time-series data points
 }
 
 message BulkIngestionPayload {
@@ -123,3 +125,4 @@ Transactional micro-buffer holding un-flushed telemetry chunks locally on disk.
 | `ts` | `FLOAT` | `NOT NULL`, `INDEX (2)` | Local recording timestamp epoch float. |
 | `sensor_sn` | `UUID` | `FOREIGN KEY`, `INDEX (1)` | Cascading relation bound to local `sensors.serial_number`. |
 | `value` | `FLOAT` | `NOT NULL` | Raw measured data point. |
+| `created_at` | `DATETIME` | `NOT NULL, INDEX` | Auto timestamp. |

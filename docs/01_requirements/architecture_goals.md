@@ -108,7 +108,7 @@ The platform is a distributed microservice architecture consisting of five key l
 - **Load testing**: `Locust` (measuring system performance limits).
 - **API testing**: `Postman` / `Newman` for REST endpoint verification.
 - **Security**: `OWASP ZAP` automated and manual scanning tools.
-- **Static analysis**: Type checking with `mypy` and linting with flake8.
+- **Static analysis**: Type checking with `ruff`.
 
 ### ⚙️ 4.3. Infrastructure Testing (DevOps)
 
