@@ -13,7 +13,7 @@ async def _get_data(uow: IUnitOfWork):
     """
     Fetch undelivered sensor data from the database.
 
-    Streams up to 20,000 records and converts them into a Protobuf SensorBatch.
+    Streams up to 20,000 records and converts them into a Protobuf batch.
 
     :return: A tuple containing a list of record IDs and the Protobuf batch object.
     """
@@ -44,9 +44,9 @@ async def _get_data(uow: IUnitOfWork):
 
 async def start_broker(broker: BaseBroker, uow: IUnitOfWork):
     """
-    Main broker loop to bridge database and Kafka.
+    Main broker loop to bridge database and broker.
 
-    Initializes the Kafka producer and periodically pushes undelivered
+    Initializes the producer and periodically pushes undelivered
     batches to the specified topic.
     """
     mlogger.info("Transmitter has been launched")

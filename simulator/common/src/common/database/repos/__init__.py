@@ -30,4 +30,10 @@ class ISensorDataRepository(ABC):
     ) -> AsyncGenerator[SensorDataBatch]: ...
 
     @abstractmethod
-    async def drop_some(self, *, created_earlier: float | datetime, max_id: int): ...
+    async def drop_some(self, *, created_earlier: float | datetime, max_id: int):
+        """Abstract method to delete records older than a specific time up to a maximum ID.
+
+        Args:
+            created_earlier (float | datetime): Cutoff timestamp or datetime object.
+            max_id (int): Upper bound limit for the record identifier.
+        """
