@@ -1,0 +1,16 @@
+[project]
+name = "tests"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = ["collector", "common", "emitter", "transmitter"]
+
+[dependency-groups]
+dev = ["pytest>=9.1.1", "pytest-asyncio>=1.4.0"]
+
+[tool.uv.sources]
+common = { workspace = true }
+transmitter = { workspace = true }
+emitter = { workspace = true }
+collector = { workspace = true }
