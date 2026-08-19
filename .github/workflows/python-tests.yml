@@ -2,20 +2,24 @@ name: Python application CI
 
 on:
   push:
-    branches: [main, cicd-test]
+    branches: [main, cicd-test, dev]
   pull_request:
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy: 
+      matrix:
+        components: [simulator, backend]
+      fail-fast: false
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           version: "latest"
@@ -24,12 +28,9 @@ jobs:
         run: uv python install 3.14
 
       - name: Install dependencies
-        run: |
-          cd tests
-          uv add pytest
-          uv sync --all-packages
+        working-directory: ${{matrix.components}}
+        run: uv sync --all-packages
 
       - name: Run tests
-        run: |
-          cd tests
-          uv run pytest
+        working-directory: ${{matrix.components}}
+        run: uv run pytest
