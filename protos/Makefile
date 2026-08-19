@@ -1,4 +1,4 @@
-BACK_out_path = "../backend/consumer/src/consumer/"
+BACK_out_path = "../backend/ingestor/src/consumer/"
 SIM_out_path = "../simulator/transmitter/schema/proto/"
 .PHONY: proto_backend proto_sim
 .DEFAULT_GOAL := help
