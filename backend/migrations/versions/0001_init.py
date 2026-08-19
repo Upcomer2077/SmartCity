@@ -6,26 +6,26 @@ Create Date: 2026-03-16 20:25:27.889011
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "0001"
-down_revision: Union[str, Sequence[str], None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
-def upgrade(engine_name: str) -> None:
+def upgrade(engine_name: str = "timescale") -> None:
     """Upgrade schema."""
-    globals()["upgrade_%s" % engine_name]()
+    globals()[f"upgrade_{engine_name}"]()
 
 
-def downgrade(engine_name: str) -> None:
+def downgrade(engine_name: str = "timescale") -> None:
     """Downgrade schema."""
-    globals()["downgrade_%s" % engine_name]()
+    globals()[f"downgrade_{engine_name}"]()
 
 
 def upgrade_timescale() -> None:

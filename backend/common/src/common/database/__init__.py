@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime
 
+from geoalchemy2 import Geometry
+from ingestor.types import SensorType
 from sqlalchemy import (
     TIMESTAMP,
     UUID,
@@ -21,8 +23,6 @@ from sqlalchemy.orm import (
 )
 from sqlalchemy.sql.functions import now
 
-from common.types import SensorType
-
 
 class _TSBase(DeclarativeBase, MappedAsDataclass):
     pass
@@ -40,8 +40,8 @@ class Admins(_TSBase):
         TIMESTAMP, nullable=False, default=now()
     )
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    points: Mapped[list["Points"]] = relationship(back_populates="admin", init=False)
-    sensors: Mapped[list["Sensors"]] = relationship(back_populates="admin", init=False)
+    points: Mapped[list["Points"]] = relationship(back_populates="admin", init=False)  # noqa: UP037
+    sensors: Mapped[list["Sensors"]] = relationship(back_populates="admin", init=False)  # noqa: UP037
 
 
 class Points(_TSBase):
@@ -57,8 +57,8 @@ class Points(_TSBase):
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
-    admin: Mapped["Admins"] = relationship(back_populates="points", init=False)
-    bound_sensors: Mapped[list["BoundSensors"]] = relationship(
+    admin: Mapped["Admins"] = relationship(back_populates="points", init=False)  # noqa: UP037
+    bound_sensors: Mapped[list["BoundSensors"]] = relationship(  # noqa: UP037
         back_populates="point", init=False
     )
 
@@ -67,8 +67,9 @@ class Sensors(_TSBase):
     __tablename__ = "sensors"
 
     type: Mapped[SensorType] = mapped_column(Enum(SensorType), nullable=False)
-    lon: Mapped[float] = mapped_column(Float, nullable=False)
-    lat: Mapped[float] = mapped_column(Float, nullable=False)
+    coordinates: Mapped[Geometry] = mapped_column(
+        Geometry(geometry_type="POINT", srid=4326)
+    )
     serial_number: Mapped[UUID] = mapped_column(UUID, unique=True, nullable=False)
     created_by: Mapped[int] = mapped_column(
         Integer, ForeignKey("admins.id", ondelete="SET NULL"), nullable=True
@@ -77,13 +78,13 @@ class Sensors(_TSBase):
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, default=now(), nullable=False, onupdate=now()
     )
-    sensor_data: Mapped[list["SensorDataHyper"]] = relationship(
+    sensor_data: Mapped[list["SensorDataHyper"]] = relationship(  # noqa: UP037
         back_populates="sensor", init=False
     )
-    bound_points: Mapped[list["BoundSensors"]] = relationship(
+    bound_points: Mapped[list["BoundSensors"]] = relationship(  # noqa: UP037
         back_populates="sensor", init=False
     )
-    admin: Mapped["Admins"] = relationship(back_populates="sensors", init=False)
+    admin: Mapped["Admins"] = relationship(back_populates="sensors", init=False)  # noqa: UP037
 
 
 class SensorDataHyper(_TSBase):
@@ -91,7 +92,7 @@ class SensorDataHyper(_TSBase):
     sensor_id: Mapped[UUID] = mapped_column(UUID, ForeignKey("sensors.sensor_id"))
     value: Mapped[float] = mapped_column(Float, nullable=False)
     ts: Mapped[datetime] = mapped_column(TIMESTAMP)
-    sensor: Mapped["Sensors"] = relationship(back_populates="sensor_data", init=False)
+    sensor: Mapped["Sensors"] = relationship(back_populates="sensor_data", init=False)  # noqa: UP037
 
     __table_args__ = (PrimaryKeyConstraint("ts", "sensor_id", name="PK_ts_sensor_id"),)
 
@@ -105,8 +106,8 @@ class BoundSensors(_TSBase):
     sensor_id: Mapped[UUID] = mapped_column(
         UUID, ForeignKey("sensors.sensor_id"), nullable=False
     )
-    point: Mapped["Points"] = relationship(back_populates="bound_sensors", init=False)
-    sensor: Mapped["Sensors"] = relationship(back_populates="bound_points", init=False)
+    point: Mapped["Points"] = relationship(back_populates="bound_sensors", init=False)  # noqa: UP037
+    sensor: Mapped["Sensors"] = relationship(back_populates="bound_points", init=False)  # noqa: UP037
 
     __table_args__ = (
         PrimaryKeyConstraint(
