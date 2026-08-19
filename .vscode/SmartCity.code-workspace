@@ -30,9 +30,6 @@
     {
       "path": "../monitoring",
     },
-    {
-      "path": "../tests",
-    },
   ],
   "settings": {
     "python.analysis.autoImportCompletions": true,
