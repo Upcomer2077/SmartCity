@@ -1,12 +1,9 @@
 [project]
-name = "backend"
+name = "tests"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.14"
 dependencies = []
 
 [dependency-groups]
-dev = ["alembic>=1.18.3"]
-
-[tool.uv.workspace]
-members = ["common", "app", "ingestor", "tests"]
+dev = ["pytest>=9.1.1"]
