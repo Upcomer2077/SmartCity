@@ -6,14 +6,14 @@ from common.database.manager import DBManager
 from common.database.uow.sqlalchemy import AlchemyUnitOfWork
 from common.logger_ import mlogger
 from common.types import SensorBufferType
+from emitter.registry import SensorRegistry
+from emitter.utils.get_sensor_type import get_sensor_type
+from transmitter.brokers.kafka_ import KafkaBroker
 
 from collector import launch_collector
 from config import DB_URL, KAFKA_BOOTSTRAP_SERVER
 from emitter import launch_emitter
-from emitter.registry import SensorRegistry
-from emitter.utils.get_sensor_type import get_sensor_type
 from transmitter import launch_transmitter
-from transmitter.brokers.kafka_ import KafkaBroker
 
 # Global buffer for cross-task sensor data exchange
 shared_queue: asyncio.Queue[SensorBufferType] = asyncio.Queue()
